@@ -1,3 +1,6 @@
 .DS_Store
+.cache/
+.derived-data/
+.home/
+.swiftpm-cache/
 .superpowers/
-
