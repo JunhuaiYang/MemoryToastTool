@@ -19,6 +19,7 @@ struct MemoryToastToolApp: App {
         _alertSessionController = StateObject(
             wrappedValue: AlertSessionController(
                 countdownSeconds: loadedSettings.forceQuitRevealDelaySeconds,
+                relaunchDelaySeconds: loadedSettings.relaunchDelaySeconds,
                 appActionService: AppActionService(),
                 relaunchService: AppRelaunchService()
             )
@@ -39,6 +40,7 @@ struct MemoryToastToolApp: App {
                 onSave: {
                     settingsStore.save(settings)
                     menuBarViewModel.apply(settings: settings)
+                    alertSessionController.apply(settings: settings)
                 }
             )
         }

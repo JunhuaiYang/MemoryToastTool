@@ -23,6 +23,10 @@
 "settings.language.system" = "Follow System";
 "settings.save" = "Save";
 "alert.title" = "Memory pressure is high";
+"alert.selection_count %lld" = "%lld apps selected";
 "alert.countdown %lld" = "Waiting %llds before force quit becomes available";
+"alert.force_quit_ready" = "Countdown finished. You can now force quit the remaining apps.";
+"alert.relaunch_after_quit" = "Reopen";
+"alert.no_processes" = "All selected apps have exited";
 "alert.action.quit_selected" = "Quit Selected";
 "alert.action.force_quit_selected" = "Force Quit Selected";

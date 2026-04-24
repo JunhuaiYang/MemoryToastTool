@@ -14,10 +14,14 @@ final class StubWorkspaceController: @unchecked Sendable, WorkspaceControlling {
     }
 }
 
-struct StubApplicationWorkspace: ApplicationWorkspace {
+final class StubApplicationWorkspace: @unchecked Sendable, ApplicationWorkspace {
+    private(set) var openedApplicationURLs: [URL] = []
+
     func applicationURL(forBundleIdentifier bundleIdentifier: String) -> URL? {
         URL(fileURLWithPath: "/Applications/\(bundleIdentifier).app")
     }
 
-    func openApplication(at url: URL) {}
+    func openApplication(at url: URL) {
+        openedApplicationURLs.append(url)
+    }
 }
