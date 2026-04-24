@@ -33,6 +33,7 @@
 		A00000000000000000000050 /* DefaultSelectionPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000051 /* DefaultSelectionPlanner.swift */; };
 		A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000053 /* AlertPresentationPolicy.swift */; };
 		A00000000000000000000054 /* LocalizationSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000055 /* LocalizationSupport.swift */; };
+		A00000000000000000000056 /* WelcomeGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000057 /* WelcomeGuideView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +75,7 @@
 		A00000000000000000000051 /* DefaultSelectionPlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DefaultSelectionPlanner.swift; path = Sources/MemoryToastCore/DefaultSelectionPlanner.swift; sourceTree = SOURCE_ROOT; };
 		A00000000000000000000053 /* AlertPresentationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlertPresentationPolicy.swift; path = Sources/MemoryToastCore/AlertPresentationPolicy.swift; sourceTree = SOURCE_ROOT; };
 		A00000000000000000000055 /* LocalizationSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationSupport.swift; sourceTree = "<group>"; };
+		A00000000000000000000057 /* WelcomeGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeGuideView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 				A00000000000000000000049 /* AlertPanelView.swift */,
 				A0000000000000000000004F /* MenuBarContainerView.swift */,
 				A00000000000000000000055 /* LocalizationSupport.swift */,
+				A00000000000000000000057 /* WelcomeGuideView.swift */,
 				A00000000000000000000051 /* DefaultSelectionPlanner.swift */,
 				A00000000000000000000053 /* AlertPresentationPolicy.swift */,
 				A0000000000000000000004B /* Localizable.strings */,
@@ -283,6 +286,7 @@
 				A00000000000000000000050 /* DefaultSelectionPlanner.swift in Sources */,
 				A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */,
 				A00000000000000000000054 /* LocalizationSupport.swift in Sources */,
+				A00000000000000000000056 /* WelcomeGuideView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

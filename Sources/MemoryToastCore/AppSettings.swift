@@ -14,6 +14,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     public var swapUsedAlertThresholdBytes: UInt64
     public var ignoredBundleIdentifiers: [String]
     public var snoozeUntil: Date?
+    public var hasAcknowledgedSafetyGuide: Bool
     public var languageOverride: AppLanguage?
 
     public static let defaultValue = AppSettings(
@@ -25,6 +26,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         swapUsedAlertThresholdBytes: 4_000_000_000,
         ignoredBundleIdentifiers: [],
         snoozeUntil: nil,
+        hasAcknowledgedSafetyGuide: false,
         languageOverride: nil
     )
 
@@ -37,6 +39,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         swapUsedAlertThresholdBytes: UInt64,
         ignoredBundleIdentifiers: [String],
         snoozeUntil: Date?,
+        hasAcknowledgedSafetyGuide: Bool,
         languageOverride: AppLanguage?
     ) {
         self.detectionIntervalSeconds = detectionIntervalSeconds
@@ -47,6 +50,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.swapUsedAlertThresholdBytes = swapUsedAlertThresholdBytes
         self.ignoredBundleIdentifiers = ignoredBundleIdentifiers
         self.snoozeUntil = snoozeUntil
+        self.hasAcknowledgedSafetyGuide = hasAcknowledgedSafetyGuide
         self.languageOverride = languageOverride
     }
 }

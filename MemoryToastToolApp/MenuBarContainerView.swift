@@ -7,6 +7,9 @@ struct MenuBarContainerView: View {
     @ObservedObject var alertSessionController: AlertSessionController
     @Binding var settings: AppSettings
     @Binding var isIgnoringCurrentIncident: Bool
+    let onSaveSettings: () -> Void
+
+    @State private var hasPresentedGuideInCurrentSession = false
 
     private let selectionPlanner = DefaultSelectionPlanner()
     private let presentationPolicy = AlertPresentationPolicy()
@@ -18,11 +21,15 @@ struct MenuBarContainerView: View {
             onRefresh: refreshAndMaybePresentAlert,
             onOpenAlert: {
                 presentAlertWindow()
+            },
+            onOpenGuide: {
+                presentGuideWindow()
             }
         )
         .task(id: monitorLoopID) {
             viewModel.apply(settings: settings)
             alertSessionController.apply(settings: settings)
+            maybePresentGuideOnLaunch()
             await runMonitoringLoop()
         }
         .onChange(of: settings) { _, newSettings in
@@ -33,7 +40,16 @@ struct MenuBarContainerView: View {
 
     private var monitorLoopID: String {
         let ignoredSignature = settings.ignoredBundleIdentifiers.joined(separator: ",")
-        return "\(settings.detectionIntervalSeconds)-\(settings.defaultSelectedAppCount)-\(settings.forceQuitRevealDelaySeconds)-\(settings.relaunchDelaySeconds)-\(settings.snoozeUntil?.timeIntervalSince1970 ?? 0)-\(ignoredSignature)"
+        return "\(settings.detectionIntervalSeconds)-\(settings.defaultSelectedAppCount)-\(settings.forceQuitRevealDelaySeconds)-\(settings.relaunchDelaySeconds)-\(settings.snoozeUntil?.timeIntervalSince1970 ?? 0)-\(ignoredSignature)-\(settings.hasAcknowledgedSafetyGuide)"
+    }
+
+    private func maybePresentGuideOnLaunch() {
+        guard !settings.hasAcknowledgedSafetyGuide, !hasPresentedGuideInCurrentSession else {
+            return
+        }
+
+        hasPresentedGuideInCurrentSession = true
+        presentGuideWindow()
     }
 
     private func refreshAndMaybePresentAlert() {
@@ -100,5 +116,9 @@ struct MenuBarContainerView: View {
 
     private func presentAlertWindow() {
         openWindow(id: "memory-alert")
+    }
+
+    private func presentGuideWindow() {
+        openWindow(id: "welcome-guide")
     }
 }

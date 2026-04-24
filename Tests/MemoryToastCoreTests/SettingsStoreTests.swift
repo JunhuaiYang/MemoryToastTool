@@ -17,6 +17,7 @@ final class SettingsStoreTests: XCTestCase {
         XCTAssertEqual(settings.swapUsedAlertThresholdBytes, 4_000_000_000)
         XCTAssertTrue(settings.ignoredBundleIdentifiers.isEmpty)
         XCTAssertNil(settings.snoozeUntil)
+        XCTAssertFalse(settings.hasAcknowledgedSafetyGuide)
         XCTAssertNil(settings.languageOverride)
     }
 
@@ -34,6 +35,7 @@ final class SettingsStoreTests: XCTestCase {
         settings.swapUsedAlertThresholdBytes = 6_000_000_000
         settings.ignoredBundleIdentifiers = ["com.apple.Safari", "com.tinyspeck.slackmacgap"]
         settings.snoozeUntil = Date(timeIntervalSince1970: 1_234_567)
+        settings.hasAcknowledgedSafetyGuide = true
         settings.languageOverride = .english
 
         store.save(settings)
@@ -48,6 +50,7 @@ final class SettingsStoreTests: XCTestCase {
         XCTAssertEqual(reloaded.swapUsedAlertThresholdBytes, 6_000_000_000)
         XCTAssertEqual(reloaded.ignoredBundleIdentifiers, ["com.apple.Safari", "com.tinyspeck.slackmacgap"])
         XCTAssertEqual(reloaded.snoozeUntil, Date(timeIntervalSince1970: 1_234_567))
+        XCTAssertTrue(reloaded.hasAcknowledgedSafetyGuide)
         XCTAssertEqual(reloaded.languageOverride, .english)
     }
 }

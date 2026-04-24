@@ -33,7 +33,12 @@ struct MemoryToastToolApp: App {
                 viewModel: menuBarViewModel,
                 alertSessionController: alertSessionController,
                 settings: $settings,
-                isIgnoringCurrentIncident: $isIgnoringCurrentIncident
+                isIgnoringCurrentIncident: $isIgnoringCurrentIncident,
+                onSaveSettings: {
+                    settingsStore.save(settings)
+                    menuBarViewModel.apply(settings: settings)
+                    alertSessionController.apply(settings: settings)
+                }
             )
         }
         Settings {
@@ -59,6 +64,19 @@ struct MemoryToastToolApp: App {
             )
         }
         .defaultSize(width: 520, height: 360)
+        .windowResizability(.contentSize)
+
+        WindowGroup(id: "welcome-guide") {
+            WelcomeGuideView(
+                settings: $settings,
+                onSave: {
+                    settingsStore.save(settings)
+                    menuBarViewModel.apply(settings: settings)
+                    alertSessionController.apply(settings: settings)
+                }
+            )
+        }
+        .defaultSize(width: 560, height: 340)
         .windowResizability(.contentSize)
     }
 }

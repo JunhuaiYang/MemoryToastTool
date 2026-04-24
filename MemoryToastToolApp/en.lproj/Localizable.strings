@@ -7,6 +7,7 @@
 "menu.no_apps" = "No running GUI apps detected";
 "menu.action.run_check" = "Run Check Now";
 "menu.action.open_alert" = "Open Alert";
+"menu.action.open_guide" = "Open Safety Guide";
 "menu.metric.used" = "Used";
 "menu.metric.available" = "Available";
 "menu.metric.swap" = "Swap";
@@ -41,3 +42,10 @@
 "alert.action.snooze" = "Snooze 10m";
 "alert.action.quit_selected" = "Quit Selected";
 "alert.action.force_quit_selected" = "Force Quit Selected";
+"guide.title" = "Before You Use Memory Toast Tool";
+"guide.subtitle" = "This app helps you close memory-heavy GUI apps safely. It does not fake cleanup or kill processes automatically.";
+"guide.point.gui_only" = "Only running GUI apps are listed. Background daemons and system services are not managed here.";
+"guide.point.force_quit" = "Force quit is never automatic. It only appears after the countdown and only for apps still alive.";
+"guide.point.relaunch" = "Auto reopen only applies to apps that exit normally. Force-quit apps are not reopened.";
+"guide.point.no_fake_cleanup" = "This tool does not claim to clear cache, clean memory junk, or free system memory through unreliable tricks.";
+"guide.action.acknowledge" = "I Understand";
