@@ -12,6 +12,23 @@
 		A00000000000000000000006 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A00000000000000000000007 /* XCTest.framework */; };
 		A00000000000000000000028 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000029 /* AppSettings.swift */; };
 		A0000000000000000000002A /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000002B /* SettingsStore.swift */; };
+		A0000000000000000000002C /* ProcessSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000002D /* ProcessSample.swift */; };
+		A0000000000000000000002E /* MemorySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000002F /* MemorySnapshot.swift */; };
+		A00000000000000000000030 /* AlertRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000031 /* AlertRule.swift */; };
+		A00000000000000000000032 /* RuleEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000033 /* RuleEvaluator.swift */; };
+		A00000000000000000000034 /* SystemMemorySampling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000035 /* SystemMemorySampling.swift */; };
+		A00000000000000000000036 /* ProcessSampling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000037 /* ProcessSampling.swift */; };
+		A00000000000000000000038 /* MemoryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000039 /* MemoryMonitor.swift */; };
+		A0000000000000000000003A /* AppActionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000003B /* AppActionService.swift */; };
+		A0000000000000000000003C /* AppRelaunchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000003D /* AppRelaunchService.swift */; };
+		A0000000000000000000003E /* AlertSessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000003F /* AlertSessionState.swift */; };
+		A00000000000000000000040 /* AlertSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000041 /* AlertSessionController.swift */; };
+		A00000000000000000000042 /* MenuBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000043 /* MenuBarViewModel.swift */; };
+		A00000000000000000000044 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000045 /* MenuBarView.swift */; };
+		A00000000000000000000046 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000047 /* SettingsView.swift */; };
+		A00000000000000000000048 /* AlertPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000049 /* AlertPanelView.swift */; };
+		A0000000000000000000004A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000004B /* Localizable.strings */; };
+		A0000000000000000000004C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000004D /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +49,23 @@
 		A0000000000000000000001C /* MemoryToastToolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MemoryToastToolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A00000000000000000000029 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppSettings.swift; path = Sources/MemoryToastCore/AppSettings.swift; sourceTree = SOURCE_ROOT; };
 		A0000000000000000000002B /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SettingsStore.swift; path = Sources/MemoryToastCore/SettingsStore.swift; sourceTree = SOURCE_ROOT; };
+		A0000000000000000000002D /* ProcessSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProcessSample.swift; path = Sources/MemoryToastCore/ProcessSample.swift; sourceTree = SOURCE_ROOT; };
+		A0000000000000000000002F /* MemorySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MemorySnapshot.swift; path = Sources/MemoryToastCore/MemorySnapshot.swift; sourceTree = SOURCE_ROOT; };
+		A00000000000000000000031 /* AlertRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlertRule.swift; path = Sources/MemoryToastCore/AlertRule.swift; sourceTree = SOURCE_ROOT; };
+		A00000000000000000000033 /* RuleEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RuleEvaluator.swift; path = Sources/MemoryToastCore/RuleEvaluator.swift; sourceTree = SOURCE_ROOT; };
+		A00000000000000000000035 /* SystemMemorySampling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SystemMemorySampling.swift; path = Sources/MemoryToastCore/SystemMemorySampling.swift; sourceTree = SOURCE_ROOT; };
+		A00000000000000000000037 /* ProcessSampling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProcessSampling.swift; path = Sources/MemoryToastCore/ProcessSampling.swift; sourceTree = SOURCE_ROOT; };
+		A00000000000000000000039 /* MemoryMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MemoryMonitor.swift; path = Sources/MemoryToastCore/MemoryMonitor.swift; sourceTree = SOURCE_ROOT; };
+		A0000000000000000000003B /* AppActionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppActionService.swift; path = Sources/MemoryToastCore/AppActionService.swift; sourceTree = SOURCE_ROOT; };
+		A0000000000000000000003D /* AppRelaunchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppRelaunchService.swift; path = Sources/MemoryToastCore/AppRelaunchService.swift; sourceTree = SOURCE_ROOT; };
+		A0000000000000000000003F /* AlertSessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlertSessionState.swift; path = Sources/MemoryToastCore/AlertSessionState.swift; sourceTree = SOURCE_ROOT; };
+		A00000000000000000000041 /* AlertSessionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlertSessionController.swift; path = Sources/MemoryToastCore/AlertSessionController.swift; sourceTree = SOURCE_ROOT; };
+		A00000000000000000000043 /* MenuBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarViewModel.swift; sourceTree = "<group>"; };
+		A00000000000000000000045 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		A00000000000000000000047 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A00000000000000000000049 /* AlertPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPanelView.swift; sourceTree = "<group>"; };
+		A0000000000000000000004B /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A0000000000000000000004D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = zh-Hans.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +103,23 @@
 				A00000000000000000000003 /* MemoryToastToolApp.swift */,
 				A00000000000000000000029 /* AppSettings.swift */,
 				A0000000000000000000002B /* SettingsStore.swift */,
+				A0000000000000000000002D /* ProcessSample.swift */,
+				A0000000000000000000002F /* MemorySnapshot.swift */,
+				A00000000000000000000031 /* AlertRule.swift */,
+				A00000000000000000000033 /* RuleEvaluator.swift */,
+				A00000000000000000000035 /* SystemMemorySampling.swift */,
+				A00000000000000000000037 /* ProcessSampling.swift */,
+				A00000000000000000000039 /* MemoryMonitor.swift */,
+				A0000000000000000000003B /* AppActionService.swift */,
+				A0000000000000000000003D /* AppRelaunchService.swift */,
+				A0000000000000000000003F /* AlertSessionState.swift */,
+				A00000000000000000000041 /* AlertSessionController.swift */,
+				A00000000000000000000043 /* MenuBarViewModel.swift */,
+				A00000000000000000000045 /* MenuBarView.swift */,
+				A00000000000000000000047 /* SettingsView.swift */,
+				A00000000000000000000049 /* AlertPanelView.swift */,
+				A0000000000000000000004B /* Localizable.strings */,
+				A0000000000000000000004D /* Localizable.strings */,
 			);
 			path = MemoryToastToolApp;
 			sourceTree = "<group>";
@@ -179,6 +230,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0000000000000000000004A /* Localizable.strings in Resources */,
+				A0000000000000000000004C /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,6 +252,21 @@
 				A00000000000000000000028 /* AppSettings.swift in Sources */,
 				A00000000000000000000002 /* MemoryToastToolApp.swift in Sources */,
 				A0000000000000000000002A /* SettingsStore.swift in Sources */,
+				A0000000000000000000002C /* ProcessSample.swift in Sources */,
+				A0000000000000000000002E /* MemorySnapshot.swift in Sources */,
+				A00000000000000000000030 /* AlertRule.swift in Sources */,
+				A00000000000000000000032 /* RuleEvaluator.swift in Sources */,
+				A00000000000000000000034 /* SystemMemorySampling.swift in Sources */,
+				A00000000000000000000036 /* ProcessSampling.swift in Sources */,
+				A00000000000000000000038 /* MemoryMonitor.swift in Sources */,
+				A0000000000000000000003A /* AppActionService.swift in Sources */,
+				A0000000000000000000003C /* AppRelaunchService.swift in Sources */,
+				A0000000000000000000003E /* AlertSessionState.swift in Sources */,
+				A00000000000000000000040 /* AlertSessionController.swift in Sources */,
+				A00000000000000000000042 /* MenuBarViewModel.swift in Sources */,
+				A00000000000000000000044 /* MenuBarView.swift in Sources */,
+				A00000000000000000000046 /* SettingsView.swift in Sources */,
+				A00000000000000000000048 /* AlertPanelView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

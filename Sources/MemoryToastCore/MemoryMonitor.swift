@@ -1,6 +1,6 @@
 import Foundation
 
-public struct MemoryMonitor {
+public struct MemoryMonitor: Sendable {
     public let systemSampler: SystemMemorySampling
     public let processSampler: ProcessSampling
 

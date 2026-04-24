@@ -1,12 +1,13 @@
 import Foundation
+import Combine
 
 @MainActor
-public final class AlertSessionController {
+public final class AlertSessionController: ObservableObject {
     private let countdownSeconds: Int
     private let appActionService: AppActionService
     private let relaunchService: AppRelaunchService
 
-    public private(set) var state: AlertSessionState
+    @Published public private(set) var state: AlertSessionState
 
     public init(
         countdownSeconds: Int,

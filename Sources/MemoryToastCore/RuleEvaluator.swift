@@ -10,7 +10,7 @@ public struct RuleEvaluationResult: Equatable, Sendable {
     }
 }
 
-public struct RuleEvaluator {
+public struct RuleEvaluator: Sendable {
     public init() {}
 
     public func evaluate(snapshot: MemorySnapshot, rules: [AlertRule]) -> RuleEvaluationResult {

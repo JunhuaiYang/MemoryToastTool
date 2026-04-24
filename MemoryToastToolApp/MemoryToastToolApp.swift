@@ -3,20 +3,42 @@ import SwiftUI
 @main
 struct MemoryToastToolApp: App {
     private let settingsStore = SettingsStore()
+    @State private var settings = AppSettings.defaultValue
+    @StateObject private var menuBarViewModel = MenuBarViewModel()
+    @StateObject private var alertSessionController = AlertSessionController(
+        countdownSeconds: 10,
+        appActionService: AppActionService(),
+        relaunchService: AppRelaunchService()
+    )
 
     var body: some Scene {
         MenuBarExtra("Memory Toast Tool", systemImage: "memorychip") {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Memory Toast Tool")
-                    .font(.headline)
-                Text("Bootstrapping...")
-                    .foregroundStyle(.secondary)
+            MenuBarView(
+                viewModel: menuBarViewModel,
+                settings: settings,
+                onRefresh: {
+                    Task { await menuBarViewModel.refresh() }
+                },
+                onOpenAlert: {}
+            )
+            .task {
+                if settings == .defaultValue {
+                    settings = settingsStore.load()
+                }
+                await menuBarViewModel.refresh()
             }
-            .padding(12)
         }
         Settings {
-            Text("Settings view is not wired yet.")
-                .padding(20)
+            SettingsView(
+                settings: $settings,
+                onSave: {
+                    settingsStore.save(settings)
+                }
+            )
         }
+        Window("Memory Alert", id: "memory-alert") {
+            AlertPanelView(controller: alertSessionController)
+        }
+        .defaultSize(width: 520, height: 360)
     }
 }
