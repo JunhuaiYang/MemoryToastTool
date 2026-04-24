@@ -26,6 +26,25 @@ struct SettingsView: View {
                 Text("简体中文").tag(AppLanguage?.some(.simplifiedChinese))
             }
 
+            Section(String(localized: "settings.ignored_apps")) {
+                if settings.ignoredBundleIdentifiers.isEmpty {
+                    Text(String(localized: "settings.ignored_none"))
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(settings.ignoredBundleIdentifiers, id: \.self) { bundleIdentifier in
+                        Text(bundleIdentifier)
+                            .font(.footnote)
+                    }
+                }
+            }
+
+            if settings.snoozeUntil != nil {
+                Button(String(localized: "settings.clear_snooze")) {
+                    settings.snoozeUntil = nil
+                    onSave()
+                }
+            }
+
             Button(String(localized: "settings.save"), action: onSave)
         }
         .padding(20)

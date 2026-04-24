@@ -30,6 +30,8 @@
 		A0000000000000000000004A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000004B /* Localizable.strings */; };
 		A0000000000000000000004C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000004D /* Localizable.strings */; };
 		A0000000000000000000004E /* MenuBarContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000004F /* MenuBarContainerView.swift */; };
+		A00000000000000000000050 /* DefaultSelectionPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000051 /* DefaultSelectionPlanner.swift */; };
+		A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000053 /* AlertPresentationPolicy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +70,8 @@
 		A0000000000000000000004B /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A0000000000000000000004D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = zh-Hans.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A0000000000000000000004F /* MenuBarContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarContainerView.swift; sourceTree = "<group>"; };
+		A00000000000000000000051 /* DefaultSelectionPlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DefaultSelectionPlanner.swift; path = Sources/MemoryToastCore/DefaultSelectionPlanner.swift; sourceTree = SOURCE_ROOT; };
+		A00000000000000000000053 /* AlertPresentationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlertPresentationPolicy.swift; path = Sources/MemoryToastCore/AlertPresentationPolicy.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +125,8 @@
 				A00000000000000000000047 /* SettingsView.swift */,
 				A00000000000000000000049 /* AlertPanelView.swift */,
 				A0000000000000000000004F /* MenuBarContainerView.swift */,
+				A00000000000000000000051 /* DefaultSelectionPlanner.swift */,
+				A00000000000000000000053 /* AlertPresentationPolicy.swift */,
 				A0000000000000000000004B /* Localizable.strings */,
 				A0000000000000000000004D /* Localizable.strings */,
 			);
@@ -271,6 +277,8 @@
 				A00000000000000000000046 /* SettingsView.swift in Sources */,
 				A00000000000000000000048 /* AlertPanelView.swift in Sources */,
 				A0000000000000000000004E /* MenuBarContainerView.swift in Sources */,
+				A00000000000000000000050 /* DefaultSelectionPlanner.swift in Sources */,
+				A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

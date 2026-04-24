@@ -4,6 +4,7 @@ import SwiftUI
 struct MemoryToastToolApp: App {
     private let settingsStore: SettingsStore
     @State private var settings: AppSettings
+    @State private var isIgnoringCurrentIncident = false
     @StateObject private var menuBarViewModel: MenuBarViewModel
     @StateObject private var alertSessionController: AlertSessionController
 
@@ -31,7 +32,8 @@ struct MemoryToastToolApp: App {
             MenuBarContainerView(
                 viewModel: menuBarViewModel,
                 alertSessionController: alertSessionController,
-                settings: $settings
+                settings: $settings,
+                isIgnoringCurrentIncident: $isIgnoringCurrentIncident
             )
         }
         Settings {
@@ -45,7 +47,16 @@ struct MemoryToastToolApp: App {
             )
         }
         WindowGroup(id: "memory-alert") {
-            AlertPanelView(controller: alertSessionController)
+            AlertPanelView(
+                controller: alertSessionController,
+                settings: $settings,
+                isIgnoringCurrentIncident: $isIgnoringCurrentIncident,
+                onSaveSettings: {
+                    settingsStore.save(settings)
+                    menuBarViewModel.apply(settings: settings)
+                    alertSessionController.apply(settings: settings)
+                }
+            )
         }
         .defaultSize(width: 520, height: 360)
         .windowResizability(.contentSize)

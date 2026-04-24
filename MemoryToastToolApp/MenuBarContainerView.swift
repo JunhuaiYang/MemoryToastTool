@@ -6,6 +6,10 @@ struct MenuBarContainerView: View {
     @ObservedObject var viewModel: MenuBarViewModel
     @ObservedObject var alertSessionController: AlertSessionController
     @Binding var settings: AppSettings
+    @Binding var isIgnoringCurrentIncident: Bool
+
+    private let selectionPlanner = DefaultSelectionPlanner()
+    private let presentationPolicy = AlertPresentationPolicy()
 
     var body: some View {
         MenuBarView(
@@ -28,7 +32,8 @@ struct MenuBarContainerView: View {
     }
 
     private var monitorLoopID: String {
-        "\(settings.detectionIntervalSeconds)-\(settings.defaultSelectedAppCount)-\(settings.forceQuitRevealDelaySeconds)-\(settings.relaunchDelaySeconds)"
+        let ignoredSignature = settings.ignoredBundleIdentifiers.joined(separator: ",")
+        return "\(settings.detectionIntervalSeconds)-\(settings.defaultSelectedAppCount)-\(settings.forceQuitRevealDelaySeconds)-\(settings.relaunchDelaySeconds)-\(settings.snoozeUntil?.timeIntervalSince1970 ?? 0)-\(ignoredSignature)"
     }
 
     private func refreshAndMaybePresentAlert() {
@@ -49,6 +54,12 @@ struct MenuBarContainerView: View {
     private func refreshAndMaybePresentAlertTask() async {
         await viewModel.refresh()
 
+        let reasons = viewModel.latestReasons
+        isIgnoringCurrentIncident = presentationPolicy.shouldKeepIgnoringCurrentIncident(
+            isIgnoringCurrentIncident: isIgnoringCurrentIncident,
+            triggerReasons: reasons
+        )
+
         guard let snapshot = viewModel.latestSnapshot else {
             return
         }
@@ -57,17 +68,23 @@ struct MenuBarContainerView: View {
             alertSessionController.refreshProcesses(snapshot.processes)
         }
 
-        guard !viewModel.latestReasons.isEmpty else {
-            return
-        }
-
-        guard !isAlertActive else {
+        guard presentationPolicy.shouldPresentAlert(
+            triggerReasons: reasons,
+            isAlertActive: isAlertActive,
+            isIgnoringCurrentIncident: isIgnoringCurrentIncident,
+            snoozeUntil: settings.snoozeUntil,
+            now: Date()
+        ) else {
             return
         }
 
         alertSessionController.present(
             snapshot: snapshot,
-            selectedPIDs: Array(snapshot.processes.prefix(max(0, settings.defaultSelectedAppCount))).map(\.pid)
+            selectedPIDs: selectionPlanner.selectDefaultPIDs(
+                from: snapshot.processes,
+                count: settings.defaultSelectedAppCount,
+                ignoredBundleIdentifiers: settings.ignoredBundleIdentifiers
+            )
         )
         presentAlertWindow()
     }
