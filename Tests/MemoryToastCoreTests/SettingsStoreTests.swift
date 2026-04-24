@@ -13,6 +13,8 @@ final class SettingsStoreTests: XCTestCase {
         XCTAssertEqual(settings.defaultSelectedAppCount, 3)
         XCTAssertEqual(settings.relaunchDelaySeconds, 5)
         XCTAssertEqual(settings.forceQuitRevealDelaySeconds, 10)
+        XCTAssertEqual(settings.availableMemoryAlertThresholdBytes, 2_000_000_000)
+        XCTAssertEqual(settings.swapUsedAlertThresholdBytes, 4_000_000_000)
         XCTAssertNil(settings.languageOverride)
     }
 
@@ -26,6 +28,8 @@ final class SettingsStoreTests: XCTestCase {
         settings.defaultSelectedAppCount = 4
         settings.relaunchDelaySeconds = 9
         settings.forceQuitRevealDelaySeconds = 11
+        settings.availableMemoryAlertThresholdBytes = 1_200_000_000
+        settings.swapUsedAlertThresholdBytes = 6_000_000_000
         settings.languageOverride = .english
 
         store.save(settings)
@@ -36,6 +40,8 @@ final class SettingsStoreTests: XCTestCase {
         XCTAssertEqual(reloaded.defaultSelectedAppCount, 4)
         XCTAssertEqual(reloaded.relaunchDelaySeconds, 9)
         XCTAssertEqual(reloaded.forceQuitRevealDelaySeconds, 11)
+        XCTAssertEqual(reloaded.availableMemoryAlertThresholdBytes, 1_200_000_000)
+        XCTAssertEqual(reloaded.swapUsedAlertThresholdBytes, 6_000_000_000)
         XCTAssertEqual(reloaded.languageOverride, .english)
     }
 }

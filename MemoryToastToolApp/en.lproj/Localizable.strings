@@ -11,11 +11,14 @@
 "menu.metric.available" = "Available";
 "menu.metric.swap" = "Swap";
 "menu.metric.pressure" = "Pressure";
+"menu.reasons" = "Triggered Rules";
 "menu.interval %lld" = "Interval: %llds";
 "settings.interval" = "Detection interval (seconds)";
 "settings.default_selected" = "Default selected app count";
 "settings.relaunch_delay" = "Relaunch delay (seconds)";
 "settings.force_quit_delay" = "Force quit reveal delay (seconds)";
+"settings.available_threshold" = "Available memory threshold (bytes)";
+"settings.swap_threshold" = "Swap usage threshold (bytes)";
 "settings.language" = "Language";
 "settings.language.system" = "Follow System";
 "settings.save" = "Save";

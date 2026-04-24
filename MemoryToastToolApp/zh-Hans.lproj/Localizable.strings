@@ -11,11 +11,14 @@
 "menu.metric.available" = "可用";
 "menu.metric.swap" = "Swap";
 "menu.metric.pressure" = "压力";
+"menu.reasons" = "命中的规则";
 "menu.interval %lld" = "检测间隔：%lld 秒";
 "settings.interval" = "检测周期（秒）";
 "settings.default_selected" = "默认勾选数量";
 "settings.relaunch_delay" = "自动重开延迟（秒）";
 "settings.force_quit_delay" = "强杀按钮显示延迟（秒）";
+"settings.available_threshold" = "可用内存阈值（字节）";
+"settings.swap_threshold" = "Swap 阈值（字节）";
 "settings.language" = "语言";
 "settings.language.system" = "跟随系统";
 "settings.save" = "保存";

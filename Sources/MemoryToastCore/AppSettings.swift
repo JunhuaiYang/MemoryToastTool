@@ -10,6 +10,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
     public var defaultSelectedAppCount: Int
     public var relaunchDelaySeconds: Int
     public var forceQuitRevealDelaySeconds: Int
+    public var availableMemoryAlertThresholdBytes: UInt64
+    public var swapUsedAlertThresholdBytes: UInt64
     public var languageOverride: AppLanguage?
 
     public static let defaultValue = AppSettings(
@@ -17,6 +19,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
         defaultSelectedAppCount: 3,
         relaunchDelaySeconds: 5,
         forceQuitRevealDelaySeconds: 10,
+        availableMemoryAlertThresholdBytes: 2_000_000_000,
+        swapUsedAlertThresholdBytes: 4_000_000_000,
         languageOverride: nil
     )
 
@@ -25,12 +29,16 @@ public struct AppSettings: Codable, Equatable, Sendable {
         defaultSelectedAppCount: Int,
         relaunchDelaySeconds: Int,
         forceQuitRevealDelaySeconds: Int,
+        availableMemoryAlertThresholdBytes: UInt64,
+        swapUsedAlertThresholdBytes: UInt64,
         languageOverride: AppLanguage?
     ) {
         self.detectionIntervalSeconds = detectionIntervalSeconds
         self.defaultSelectedAppCount = defaultSelectedAppCount
         self.relaunchDelaySeconds = relaunchDelaySeconds
         self.forceQuitRevealDelaySeconds = forceQuitRevealDelaySeconds
+        self.availableMemoryAlertThresholdBytes = availableMemoryAlertThresholdBytes
+        self.swapUsedAlertThresholdBytes = swapUsedAlertThresholdBytes
         self.languageOverride = languageOverride
     }
 }

@@ -21,6 +21,19 @@ struct MenuBarView: View {
                     .foregroundStyle(.secondary)
             }
 
+            if !viewModel.latestReasons.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(String(localized: "menu.reasons"))
+                        .font(.subheadline.weight(.semibold))
+
+                    ForEach(viewModel.latestReasons, id: \.self) { reason in
+                        Text(reason)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
             Divider()
 
             VStack(alignment: .leading, spacing: 8) {

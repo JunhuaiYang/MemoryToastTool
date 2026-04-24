@@ -5,6 +5,7 @@ import Combine
 final class MenuBarViewModel: ObservableObject {
     private let monitor: MemoryMonitor
     private let ruleEvaluator: RuleEvaluator
+    private var activeRules: [AlertRule] = []
 
     @Published var latestSnapshot: MemorySnapshot?
     @Published var latestReasons: [String] = []
@@ -33,12 +34,20 @@ final class MenuBarViewModel: ObservableObject {
         Array((latestSnapshot?.processes ?? []).prefix(5))
     }
 
-    func refresh(using rules: [AlertRule] = []) async {
+    func apply(settings: AppSettings) {
+        activeRules = [
+            .availableMemoryBelow(bytes: settings.availableMemoryAlertThresholdBytes),
+            .swapUsedAbove(bytes: settings.swapUsedAlertThresholdBytes)
+        ]
+    }
+
+    func refresh() async {
         isRefreshing = true
         defer { isRefreshing = false }
 
         let monitor = self.monitor
         let ruleEvaluator = self.ruleEvaluator
+        let rules = self.activeRules
 
         do {
             let snapshot = try await monitor.sample()

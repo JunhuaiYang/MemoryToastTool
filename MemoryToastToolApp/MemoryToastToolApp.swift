@@ -24,6 +24,7 @@ struct MemoryToastToolApp: App {
             .task {
                 if settings == .defaultValue {
                     settings = settingsStore.load()
+                    menuBarViewModel.apply(settings: settings)
                 }
                 await menuBarViewModel.refresh()
             }
@@ -33,6 +34,7 @@ struct MemoryToastToolApp: App {
                 settings: $settings,
                 onSave: {
                     settingsStore.save(settings)
+                    menuBarViewModel.apply(settings: settings)
                 }
             )
         }

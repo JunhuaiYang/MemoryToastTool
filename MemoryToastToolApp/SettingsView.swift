@@ -17,6 +17,8 @@ struct SettingsView: View {
             TextField(String(localized: "settings.default_selected"), value: $settings.defaultSelectedAppCount, formatter: numberFormatter)
             TextField(String(localized: "settings.relaunch_delay"), value: $settings.relaunchDelaySeconds, formatter: numberFormatter)
             TextField(String(localized: "settings.force_quit_delay"), value: $settings.forceQuitRevealDelaySeconds, formatter: numberFormatter)
+            TextField(String(localized: "settings.available_threshold"), value: $settings.availableMemoryAlertThresholdBytes, formatter: numberFormatter)
+            TextField(String(localized: "settings.swap_threshold"), value: $settings.swapUsedAlertThresholdBytes, formatter: numberFormatter)
 
             Picker(String(localized: "settings.language"), selection: $settings.languageOverride) {
                 Text(String(localized: "settings.language.system")).tag(AppLanguage?.none)
