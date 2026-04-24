@@ -2,5 +2,6 @@
 .cache/
 .derived-data/
 .home/
+.build/
 .swiftpm-cache/
 .superpowers/
