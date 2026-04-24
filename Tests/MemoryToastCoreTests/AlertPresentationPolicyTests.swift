@@ -4,7 +4,7 @@ import XCTest
 final class AlertPresentationPolicyTests: XCTestCase {
     func testDoesNotPresentWhileSnoozeIsActive() {
         let shouldPresent = AlertPresentationPolicy().shouldPresentAlert(
-            triggerReasons: ["swap > 1"],
+            triggerReasons: [.swapUsedAbove(bytes: 1)],
             isAlertActive: false,
             isIgnoringCurrentIncident: false,
             snoozeUntil: Date(timeIntervalSince1970: 200),
@@ -19,7 +19,7 @@ final class AlertPresentationPolicyTests: XCTestCase {
 
         XCTAssertTrue(policy.shouldKeepIgnoringCurrentIncident(
             isIgnoringCurrentIncident: true,
-            triggerReasons: ["swap > 1"]
+            triggerReasons: [.swapUsedAbove(bytes: 1)]
         ))
         XCTAssertFalse(policy.shouldKeepIgnoringCurrentIncident(
             isIgnoringCurrentIncident: true,

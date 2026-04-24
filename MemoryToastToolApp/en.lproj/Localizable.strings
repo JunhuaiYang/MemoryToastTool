@@ -13,6 +13,10 @@
 "menu.metric.pressure" = "Pressure";
 "menu.reasons" = "Triggered Rules";
 "menu.interval %lld" = "Interval: %llds";
+"rule.used_ratio_above %@" = "Used memory above %@";
+"rule.available_below %@" = "Available memory below %@";
+"rule.swap_above %@" = "Swap above %@";
+"rule.pressure_at_least %@" = "Pressure at least %@";
 "settings.interval" = "Detection interval (seconds)";
 "settings.default_selected" = "Default selected app count";
 "settings.relaunch_delay" = "Relaunch delay (seconds)";

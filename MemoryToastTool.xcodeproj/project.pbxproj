@@ -32,6 +32,7 @@
 		A0000000000000000000004E /* MenuBarContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000004F /* MenuBarContainerView.swift */; };
 		A00000000000000000000050 /* DefaultSelectionPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000051 /* DefaultSelectionPlanner.swift */; };
 		A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000053 /* AlertPresentationPolicy.swift */; };
+		A00000000000000000000054 /* LocalizationSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000055 /* LocalizationSupport.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		A0000000000000000000004F /* MenuBarContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarContainerView.swift; sourceTree = "<group>"; };
 		A00000000000000000000051 /* DefaultSelectionPlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DefaultSelectionPlanner.swift; path = Sources/MemoryToastCore/DefaultSelectionPlanner.swift; sourceTree = SOURCE_ROOT; };
 		A00000000000000000000053 /* AlertPresentationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlertPresentationPolicy.swift; path = Sources/MemoryToastCore/AlertPresentationPolicy.swift; sourceTree = SOURCE_ROOT; };
+		A00000000000000000000055 /* LocalizationSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationSupport.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 				A00000000000000000000047 /* SettingsView.swift */,
 				A00000000000000000000049 /* AlertPanelView.swift */,
 				A0000000000000000000004F /* MenuBarContainerView.swift */,
+				A00000000000000000000055 /* LocalizationSupport.swift */,
 				A00000000000000000000051 /* DefaultSelectionPlanner.swift */,
 				A00000000000000000000053 /* AlertPresentationPolicy.swift */,
 				A0000000000000000000004B /* Localizable.strings */,
@@ -279,6 +282,7 @@
 				A0000000000000000000004E /* MenuBarContainerView.swift in Sources */,
 				A00000000000000000000050 /* DefaultSelectionPlanner.swift in Sources */,
 				A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */,
+				A00000000000000000000054 /* LocalizationSupport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

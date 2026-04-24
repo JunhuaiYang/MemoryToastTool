@@ -28,7 +28,7 @@ struct MemoryToastToolApp: App {
     }
 
     var body: some Scene {
-        MenuBarExtra("Memory Toast Tool", systemImage: "memorychip") {
+        MenuBarExtra(localizedString("menu.title", language: settings.languageOverride), systemImage: "memorychip") {
             MenuBarContainerView(
                 viewModel: menuBarViewModel,
                 alertSessionController: alertSessionController,

@@ -4,7 +4,7 @@ public struct AlertPresentationPolicy: Sendable {
     public init() {}
 
     public func shouldPresentAlert(
-        triggerReasons: [String],
+        triggerReasons: [TriggeredRuleReason],
         isAlertActive: Bool,
         isIgnoringCurrentIncident: Bool,
         snoozeUntil: Date?,
@@ -27,7 +27,7 @@ public struct AlertPresentationPolicy: Sendable {
 
     public func shouldKeepIgnoringCurrentIncident(
         isIgnoringCurrentIncident: Bool,
-        triggerReasons: [String]
+        triggerReasons: [TriggeredRuleReason]
     ) -> Bool {
         guard isIgnoringCurrentIncident else {
             return false

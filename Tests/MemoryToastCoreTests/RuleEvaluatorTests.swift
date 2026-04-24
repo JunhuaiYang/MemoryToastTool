@@ -39,6 +39,7 @@ final class RuleEvaluatorTests: XCTestCase {
         )
 
         XCTAssertTrue(result.isTriggered)
+        XCTAssertEqual(result.matches, [.pressureAtLeast(level: .critical)])
         XCTAssertEqual(result.reasons, ["pressure >= critical"])
     }
 }

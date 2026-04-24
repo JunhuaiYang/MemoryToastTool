@@ -13,6 +13,10 @@
 "menu.metric.pressure" = "压力";
 "menu.reasons" = "命中的规则";
 "menu.interval %lld" = "检测间隔：%lld 秒";
+"rule.used_ratio_above %@" = "已用内存高于 %@";
+"rule.available_below %@" = "可用内存低于 %@";
+"rule.swap_above %@" = "Swap 高于 %@";
+"rule.pressure_at_least %@" = "内存压力至少为 %@";
 "settings.interval" = "检测周期（秒）";
 "settings.default_selected" = "默认勾选数量";
 "settings.relaunch_delay" = "自动重开延迟（秒）";

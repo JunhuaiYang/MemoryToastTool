@@ -8,7 +8,7 @@ final class MenuBarViewModel: ObservableObject {
     private var activeRules: [AlertRule] = []
 
     @Published var latestSnapshot: MemorySnapshot?
-    @Published var latestReasons: [String] = []
+    @Published var latestReasons: [TriggeredRuleReason] = []
     @Published var isRefreshing = false
 
     init(
@@ -19,15 +19,8 @@ final class MenuBarViewModel: ObservableObject {
         self.ruleEvaluator = ruleEvaluator
     }
 
-    var statusText: String {
-        switch latestSnapshot?.pressureLevel {
-        case .critical:
-            String(localized: "menu.status.critical")
-        case .warning:
-            String(localized: "menu.status.warning")
-        default:
-            String(localized: "menu.status.normal")
-        }
+    var statusLevel: MemoryPressureLevel {
+        latestSnapshot?.pressureLevel ?? .normal
     }
 
     var topProcesses: [ProcessSample] {
@@ -52,9 +45,9 @@ final class MenuBarViewModel: ObservableObject {
         do {
             let snapshot = try await monitor.sample()
             latestSnapshot = snapshot
-            latestReasons = ruleEvaluator.evaluate(snapshot: snapshot, rules: rules).reasons
+            latestReasons = ruleEvaluator.evaluate(snapshot: snapshot, rules: rules).matches
         } catch {
-            latestReasons = [error.localizedDescription]
+            latestReasons = []
         }
     }
 }

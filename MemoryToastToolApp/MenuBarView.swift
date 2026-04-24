@@ -6,28 +6,32 @@ struct MenuBarView: View {
     let onRefresh: () -> Void
     let onOpenAlert: () -> Void
 
+    private var language: AppLanguage? {
+        settings.languageOverride
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(String(localized: "menu.title"))
+            Text(localizedString("menu.title", language: language))
                 .font(.headline)
 
-            Text(viewModel.statusText)
+            Text(localizedPressureLevel(viewModel.statusLevel, language: language))
                 .foregroundStyle(.secondary)
 
             if let snapshot = viewModel.latestSnapshot {
                 metricGrid(snapshot: snapshot)
             } else {
-                Text(String(localized: "menu.loading"))
+                Text(localizedString("menu.loading", language: language))
                     .foregroundStyle(.secondary)
             }
 
             if !viewModel.latestReasons.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(String(localized: "menu.reasons"))
+                    Text(localizedString("menu.reasons", language: language))
                         .font(.subheadline.weight(.semibold))
 
-                    ForEach(viewModel.latestReasons, id: \.self) { reason in
-                        Text(reason)
+                    ForEach(Array(viewModel.latestReasons.enumerated()), id: \.offset) { _, reason in
+                        Text(localizedRuleReason(reason, language: language))
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
@@ -37,11 +41,11 @@ struct MenuBarView: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 8) {
-                Text(String(localized: "menu.top_apps"))
+                Text(localizedString("menu.top_apps", language: language))
                     .font(.subheadline.weight(.semibold))
 
                 if viewModel.topProcesses.isEmpty {
-                    Text(String(localized: "menu.no_apps"))
+                    Text(localizedString("menu.no_apps", language: language))
                         .foregroundStyle(.secondary)
                         .font(.footnote)
                 } else {
@@ -61,11 +65,11 @@ struct MenuBarView: View {
             Divider()
 
             HStack {
-                Button(String(localized: "menu.action.run_check"), action: onRefresh)
-                Button(String(localized: "menu.action.open_alert"), action: onOpenAlert)
+                Button(localizedString("menu.action.run_check", language: language), action: onRefresh)
+                Button(localizedString("menu.action.open_alert", language: language), action: onOpenAlert)
             }
 
-            Text(String(format: String(localized: "menu.interval %lld"), settings.detectionIntervalSeconds))
+            Text(localizedFormat("menu.interval %lld", language: language, settings.detectionIntervalSeconds))
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -77,12 +81,24 @@ struct MenuBarView: View {
     private func metricGrid(snapshot: MemorySnapshot) -> some View {
         Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 8) {
             GridRow {
-                metricCell(title: String(localized: "menu.metric.used"), value: ByteCountFormatter.string(fromByteCount: Int64(snapshot.usedMemoryBytes), countStyle: .memory))
-                metricCell(title: String(localized: "menu.metric.available"), value: ByteCountFormatter.string(fromByteCount: Int64(snapshot.availableMemoryBytes), countStyle: .memory))
+                metricCell(
+                    title: localizedString("menu.metric.used", language: language),
+                    value: ByteCountFormatter.string(fromByteCount: Int64(snapshot.usedMemoryBytes), countStyle: .memory)
+                )
+                metricCell(
+                    title: localizedString("menu.metric.available", language: language),
+                    value: ByteCountFormatter.string(fromByteCount: Int64(snapshot.availableMemoryBytes), countStyle: .memory)
+                )
             }
             GridRow {
-                metricCell(title: String(localized: "menu.metric.swap"), value: ByteCountFormatter.string(fromByteCount: Int64(snapshot.swapUsedBytes), countStyle: .memory))
-                metricCell(title: String(localized: "menu.metric.pressure"), value: snapshot.pressureLevel.rawValue.capitalized)
+                metricCell(
+                    title: localizedString("menu.metric.swap", language: language),
+                    value: ByteCountFormatter.string(fromByteCount: Int64(snapshot.swapUsedBytes), countStyle: .memory)
+                )
+                metricCell(
+                    title: localizedString("menu.metric.pressure", language: language),
+                    value: localizedPressureLevel(snapshot.pressureLevel, language: language)
+                )
             }
         }
     }

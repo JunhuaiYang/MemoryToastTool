@@ -10,13 +10,17 @@ struct AlertPanelView: View {
 
     private let snoozeDurationSeconds = 10 * 60.0
 
+    private var language: AppLanguage? {
+        settings.languageOverride
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 6) {
-                Text(String(localized: "alert.title"))
+                Text(localizedString("alert.title", language: language))
                     .font(.title3.weight(.semibold))
 
-                Text(String(format: String(localized: "alert.selection_count %lld"), controller.state.selectedPIDs.count))
+                Text(localizedFormat("alert.selection_count %lld", language: language, controller.state.selectedPIDs.count))
                     .foregroundStyle(.secondary)
 
                 if controller.state.phase == .quitRequested {
@@ -26,15 +30,16 @@ struct AlertPanelView: View {
                     )
                     .controlSize(.large)
 
-                    Text(String(format: String(localized: "alert.countdown %lld"), controller.state.countdownRemaining))
+                    Text(localizedFormat("alert.countdown %lld", language: language, controller.state.countdownRemaining))
                         .foregroundStyle(.secondary)
                 } else if controller.state.phase == .forceQuitAvailable {
-                    Text(String(localized: "alert.force_quit_ready"))
+                    Text(localizedString("alert.force_quit_ready", language: language))
                         .foregroundStyle(.secondary)
                 } else if let snoozeUntil = settings.snoozeUntil, snoozeUntil > Date() {
                     Text(
-                        String(
-                            format: String(localized: "alert.snoozed_until %@"),
+                        localizedFormat(
+                            "alert.snoozed_until %@",
+                            language: language,
                             snoozeUntil.formatted(date: .omitted, time: .shortened)
                         )
                     )
@@ -71,7 +76,7 @@ struct AlertPanelView: View {
                         .frame(minWidth: 92, alignment: .trailing)
 
                     Toggle(
-                        String(localized: "alert.ignore_by_default"),
+                        localizedString("alert.ignore_by_default", language: language),
                         isOn: Binding(
                             get: { isIgnoredByDefault(process) },
                             set: { setIgnoredByDefault(for: process, isIgnored: $0) }
@@ -81,12 +86,12 @@ struct AlertPanelView: View {
                     .labelsHidden()
                     .disabled(controller.state.isSelectionLocked || process.bundleIdentifier == nil)
 
-                    Text(String(localized: "alert.ignore_by_default"))
+                    Text(localizedString("alert.ignore_by_default", language: language))
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
                     Toggle(
-                        String(localized: "alert.relaunch_after_quit"),
+                        localizedString("alert.relaunch_after_quit", language: language),
                         isOn: Binding(
                             get: { controller.state.relaunchAfterQuitPIDs.contains(process.pid) },
                             set: { controller.setRelaunchAfterQuit(pid: process.pid, isEnabled: $0) }
@@ -100,7 +105,7 @@ struct AlertPanelView: View {
                         !controller.state.selectedPIDs.contains(process.pid)
                     )
 
-                    Text(String(localized: "alert.relaunch_after_quit"))
+                    Text(localizedString("alert.relaunch_after_quit", language: language))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -108,19 +113,19 @@ struct AlertPanelView: View {
             }
             .overlay {
                 if controller.state.visibleProcesses.isEmpty {
-                    ContentUnavailableView(String(localized: "alert.no_processes"), systemImage: "checkmark.circle")
+                    ContentUnavailableView(localizedString("alert.no_processes", language: language), systemImage: "checkmark.circle")
                 }
             }
 
             HStack {
-                Button(String(localized: "alert.action.ignore_once")) {
+                Button(localizedString("alert.action.ignore_once", language: language)) {
                     isIgnoringCurrentIncident = true
                     controller.dismiss()
                     dismiss()
                 }
                 .disabled(controller.state.phase == .quitRequested)
 
-                Button(String(localized: "alert.action.snooze")) {
+                Button(localizedString("alert.action.snooze", language: language)) {
                     isIgnoringCurrentIncident = false
                     settings.snoozeUntil = Date().addingTimeInterval(snoozeDurationSeconds)
                     onSaveSettings()
@@ -131,7 +136,7 @@ struct AlertPanelView: View {
 
                 Spacer()
 
-                Button(String(localized: "alert.action.quit_selected")) {
+                Button(localizedString("alert.action.quit_selected", language: language)) {
                     Task {
                         await controller.requestQuitSelected()
                     }
@@ -139,7 +144,7 @@ struct AlertPanelView: View {
                 .disabled(controller.state.isSelectionLocked || controller.state.selectedPIDs.isEmpty)
 
                 if controller.state.phase == .forceQuitAvailable {
-                    Button(String(localized: "alert.action.force_quit_selected")) {
+                    Button(localizedString("alert.action.force_quit_selected", language: language)) {
                         Task {
                             await controller.forceQuitSelected()
                         }

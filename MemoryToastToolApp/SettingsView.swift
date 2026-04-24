@@ -11,24 +11,28 @@ struct SettingsView: View {
         return formatter
     }()
 
+    private var language: AppLanguage? {
+        settings.languageOverride
+    }
+
     var body: some View {
         Form {
-            TextField(String(localized: "settings.interval"), value: $settings.detectionIntervalSeconds, formatter: numberFormatter)
-            TextField(String(localized: "settings.default_selected"), value: $settings.defaultSelectedAppCount, formatter: numberFormatter)
-            TextField(String(localized: "settings.relaunch_delay"), value: $settings.relaunchDelaySeconds, formatter: numberFormatter)
-            TextField(String(localized: "settings.force_quit_delay"), value: $settings.forceQuitRevealDelaySeconds, formatter: numberFormatter)
-            TextField(String(localized: "settings.available_threshold"), value: $settings.availableMemoryAlertThresholdBytes, formatter: numberFormatter)
-            TextField(String(localized: "settings.swap_threshold"), value: $settings.swapUsedAlertThresholdBytes, formatter: numberFormatter)
+            TextField(localizedString("settings.interval", language: language), value: $settings.detectionIntervalSeconds, formatter: numberFormatter)
+            TextField(localizedString("settings.default_selected", language: language), value: $settings.defaultSelectedAppCount, formatter: numberFormatter)
+            TextField(localizedString("settings.relaunch_delay", language: language), value: $settings.relaunchDelaySeconds, formatter: numberFormatter)
+            TextField(localizedString("settings.force_quit_delay", language: language), value: $settings.forceQuitRevealDelaySeconds, formatter: numberFormatter)
+            TextField(localizedString("settings.available_threshold", language: language), value: $settings.availableMemoryAlertThresholdBytes, formatter: numberFormatter)
+            TextField(localizedString("settings.swap_threshold", language: language), value: $settings.swapUsedAlertThresholdBytes, formatter: numberFormatter)
 
-            Picker(String(localized: "settings.language"), selection: $settings.languageOverride) {
-                Text(String(localized: "settings.language.system")).tag(AppLanguage?.none)
+            Picker(localizedString("settings.language", language: language), selection: $settings.languageOverride) {
+                Text(localizedString("settings.language.system", language: language)).tag(AppLanguage?.none)
                 Text("English").tag(AppLanguage?.some(.english))
                 Text("简体中文").tag(AppLanguage?.some(.simplifiedChinese))
             }
 
-            Section(String(localized: "settings.ignored_apps")) {
+            Section(localizedString("settings.ignored_apps", language: language)) {
                 if settings.ignoredBundleIdentifiers.isEmpty {
-                    Text(String(localized: "settings.ignored_none"))
+                    Text(localizedString("settings.ignored_none", language: language))
                         .foregroundStyle(.secondary)
                 } else {
                     ForEach(settings.ignoredBundleIdentifiers, id: \.self) { bundleIdentifier in
@@ -39,13 +43,13 @@ struct SettingsView: View {
             }
 
             if settings.snoozeUntil != nil {
-                Button(String(localized: "settings.clear_snooze")) {
+                Button(localizedString("settings.clear_snooze", language: language)) {
                     settings.snoozeUntil = nil
                     onSave()
                 }
             }
 
-            Button(String(localized: "settings.save"), action: onSave)
+            Button(localizedString("settings.save", language: language), action: onSave)
         }
         .padding(20)
         .frame(width: 420)
