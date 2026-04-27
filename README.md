@@ -238,5 +238,9 @@ Not included:
 
 - historical trend charts or long-term analytics
 - settings import / export
-- non-macOS support
-- any "auto clean memory" or privileged system memory operations
+- non-macOS platform support
+- any form of fake "memory cleaning" or unsupported system-level memory manipulation
+
+### License
+
+This project is licensed under the MIT License. See `LICENSE`.
