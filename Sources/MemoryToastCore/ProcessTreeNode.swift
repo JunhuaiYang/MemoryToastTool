@@ -1,34 +1,34 @@
 import Foundation
 
-public struct ProcessSample: Equatable, Identifiable, Sendable {
+public struct ProcessTreeNode: Equatable, Identifiable, Sendable {
     public let pid: Int32
     public let parentPID: Int32?
-    public let appName: String
+    public let processName: String
     public let bundleIdentifier: String?
     public let memoryBytes: UInt64
     public let aggregateMemoryBytes: UInt64
     public let isRunning: Bool
-    public let childPIDs: [Int32]
+    public let children: [ProcessTreeNode]
 
     public var id: Int32 { pid }
 
     public init(
         pid: Int32,
-        parentPID: Int32? = nil,
-        appName: String,
+        parentPID: Int32?,
+        processName: String,
         bundleIdentifier: String?,
         memoryBytes: UInt64,
-        aggregateMemoryBytes: UInt64? = nil,
+        aggregateMemoryBytes: UInt64,
         isRunning: Bool,
-        childPIDs: [Int32] = []
+        children: [ProcessTreeNode]
     ) {
         self.pid = pid
         self.parentPID = parentPID
-        self.appName = appName
+        self.processName = processName
         self.bundleIdentifier = bundleIdentifier
         self.memoryBytes = memoryBytes
-        self.aggregateMemoryBytes = aggregateMemoryBytes ?? memoryBytes
+        self.aggregateMemoryBytes = aggregateMemoryBytes
         self.isRunning = isRunning
-        self.childPIDs = childPIDs
+        self.children = children
     }
 }
