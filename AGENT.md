@@ -5,7 +5,7 @@
 - Project: `MemoryToastTool`
 - Platform: macOS only
 - App type: native menu bar app
-- Primary goal: monitor system memory usage and guide the user to close memory-heavy GUI apps safely
+- Primary goal: monitor system memory usage and guide the user to close memory-heavy processes safely
 - Default languages: Simplified Chinese + English
 - Trust model: explicit user action first, no fake cleanup claims, no automatic force quit
 
@@ -19,7 +19,7 @@ Memory Toast Tool is not a "memory cleaner." It is a lightweight macOS utility t
 
 - samples current system memory state
 - evaluates local alert thresholds
-- lists running GUI apps by memory usage
+- lists running processes by memory usage
 - helps the user quit the right apps in a controlled way
 
 ### Hard Non-Goals
@@ -31,7 +31,6 @@ Do not add or imply any of the following in V1 unless explicitly requested by th
 - "free RAM" through unreliable tricks
 - automatic force quit
 - hidden background killing
-- daemon / system service management
 - cross-platform support
 - cloud sync, account system, analytics backend
 
@@ -43,7 +42,7 @@ Do not add or imply any of the following in V1 unless explicitly requested by th
 - Force quit only targets processes that were originally selected and are still alive.
 - Auto relaunch applies only to apps that quit normally.
 - Force-quit apps must never be auto relaunched.
-- Only visible GUI apps are managed; daemons and system services are out of scope.
+- System-root owners such as `launchd` and `kernel_task` must not be shown as closable targets.
 
 ## Locked UX Requirements
 
@@ -69,9 +68,11 @@ The rules are local only. Do not add network-dependent rule logic.
 - There is only one alert panel.
 - The panel shows current memory metrics.
 - The panel shows matched trigger reasons.
-- The panel shows the detected GUI app list with current memory usage.
-- The panel shows all listed apps, not just the selected ones.
-- Default selection is the top `N` memory-consuming apps.
+- The panel shows a collapsible process tree with current memory usage.
+- The panel shows both app processes and background processes.
+- Root nodes show aggregate memory; child nodes show their own memory.
+- The panel shows all listed nodes, not just the selected ones.
+- Default selection is the top `N` memory-consuming root processes.
 - `N` is configurable in Settings.
 
 ### Quit Flow
@@ -84,10 +85,17 @@ Required flow:
 4. During countdown:
    - process liveness must keep refreshing
    - memory usage must keep refreshing
-   - exited processes must disappear immediately
+   - exited processes must disappear immediately from the tree
    - checkboxes and selection controls must be disabled / greyed out
 5. After countdown ends:
    - show `Force Quit Selected` only if relevant selected processes are still alive
+
+Selection semantics:
+
+- selecting a parent selects all descendants
+- deselecting a parent deselects all descendants
+- users may still change an individual child afterward
+- partially selected ancestors must show a half-selected state
 
 ### Alert Panel Close Conditions
 
@@ -108,6 +116,14 @@ The alert panel closes only when:
 - A safety guide window must appear on first launch.
 - The guide is acknowledged once and persisted.
 - The guide can also be reopened from the menu bar panel.
+
+### Main Window
+
+- `Settings` is the app's main window.
+- Opening settings from the menu bar opens that main window.
+- The main window contains a top-level button that can open the alert panel manually.
+- Closing the main window must leave the app resident in the menu bar.
+- Closing the main window must remove persistent Dock presence.
 
 ### Localization
 
@@ -161,6 +177,8 @@ These defaults are sourced from `Sources/MemoryToastCore/AppSettings.swift` and 
 - `MenuBarContainerView` owns the monitoring loop and decides when to present the alert window.
 - If an alert is already active, fresh process samples should update the existing alert session instead of opening duplicate flows.
 - The ignored-app list affects default selection, but ignored apps may still appear in the process list.
+- The menu bar panel shows current memory summary only.
+- Matched rules and detailed process information belong in the alert panel header/body, not the menu bar.
 - `Ignore Once` suppresses the current incident until trigger reasons clear.
 - `Snooze` suppresses alerts until the stored `snoozeUntil` time expires.
 
@@ -172,6 +190,7 @@ These defaults are sourced from `Sources/MemoryToastCore/AppSettings.swift` and 
 - Do not reintroduce the earlier "two popups" model.
 - Do not add any feature that markets itself as cache cleanup or memory garbage cleanup.
 - Do not silently change default values without updating tests and docs.
+- Do not regress from tree-based presentation back to a flat GUI-only list.
 
 ### Verification Expectations
 
