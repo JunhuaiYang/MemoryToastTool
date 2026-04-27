@@ -1,6 +1,7 @@
 import AppKit
 import Foundation
 
+@MainActor
 final class AppLifecycleController: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)

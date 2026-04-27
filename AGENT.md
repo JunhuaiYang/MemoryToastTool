@@ -111,11 +111,11 @@ The alert panel closes only when:
 - Default relaunch delay is `5` seconds.
 - Only successful normal quit can schedule relaunch.
 
-### First-Run Guide
+### Settings Intro
 
-- A safety guide window must appear on first launch.
-- The guide is acknowledged once and persisted.
-- The guide can also be reopened from the menu bar panel.
+- `Settings` is the only main window.
+- The top of `Settings` contains a short product introduction and basic usage guidance.
+- Do not reintroduce a separate safety guide window.
 
 ### Main Window
 
@@ -140,11 +140,10 @@ These defaults are sourced from `Sources/MemoryToastCore/AppSettings.swift` and 
 - default selected app count: `3`
 - relaunch delay: `5` seconds
 - force quit reveal delay: `10` seconds
-- available memory threshold: `2_000_000_000` bytes
-- swap used threshold: `4_000_000_000` bytes
+- available memory threshold: `2 GB` (`2_000_000_000` bytes)
+- swap used threshold: `4 GB` (`4_000_000_000` bytes)
 - ignored bundle identifiers: empty
 - snooze: none
-- safety guide acknowledged: `false`
 - language override: `nil` (`Follow System`)
 
 ## Implementation Notes
@@ -154,7 +153,7 @@ These defaults are sourced from `Sources/MemoryToastCore/AppSettings.swift` and 
 - `Sources/MemoryToastCore/`
   - core models, monitoring, rules, app actions, relaunch service, settings persistence, alert session logic
 - `MemoryToastToolApp/`
-  - SwiftUI app entry, menu bar UI, alert panel UI, settings UI, localization helper, welcome guide
+  - SwiftUI app entry, menu bar UI, alert panel UI, settings UI, localization helper
 - `Tests/MemoryToastCoreTests/`
   - unit tests for settings, rules, monitor ordering, app actions, alert policy, alert session state
 - `MemoryToastTool.xcodeproj/`
@@ -167,7 +166,6 @@ These defaults are sourced from `Sources/MemoryToastCore/AppSettings.swift` and 
 - Menu UI: `MemoryToastToolApp/MenuBarView.swift`
 - Alert UI: `MemoryToastToolApp/AlertPanelView.swift`
 - Settings UI: `MemoryToastToolApp/SettingsView.swift`
-- Welcome guide: `MemoryToastToolApp/WelcomeGuideView.swift`
 - Localization helper: `MemoryToastToolApp/LocalizationSupport.swift`
 - Persisted settings: `Sources/MemoryToastCore/AppSettings.swift`
 - Alert session state machine: `Sources/MemoryToastCore/AlertSessionController.swift`

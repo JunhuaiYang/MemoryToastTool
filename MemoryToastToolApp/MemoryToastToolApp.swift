@@ -43,7 +43,7 @@ struct MemoryToastToolApp: App {
                 appLifecycleController.mainWindowDidClose()
             }
         }
-        .defaultSize(width: 460, height: 540)
+        .defaultSize(width: 520, height: 620)
         .windowResizability(.contentSize)
 
         MenuBarExtra(localizedString("menu.title", language: settings.languageOverride), systemImage: "memorychip") {
@@ -64,15 +64,6 @@ struct MemoryToastToolApp: App {
             )
         }
         .defaultSize(width: 520, height: 360)
-        .windowResizability(.contentSize)
-
-        WindowGroup(id: "welcome-guide") {
-            WelcomeGuideView(
-                settings: $settings,
-                onSave: saveSettings
-            )
-        }
-        .defaultSize(width: 560, height: 340)
         .windowResizability(.contentSize)
     }
 

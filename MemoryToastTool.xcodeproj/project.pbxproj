@@ -33,7 +33,6 @@
 		A00000000000000000000050 /* DefaultSelectionPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000051 /* DefaultSelectionPlanner.swift */; };
 		A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000053 /* AlertPresentationPolicy.swift */; };
 		A00000000000000000000054 /* LocalizationSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000055 /* LocalizationSupport.swift */; };
-		A00000000000000000000056 /* WelcomeGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000057 /* WelcomeGuideView.swift */; };
 		A00000000000000000000058 /* RawProcessSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000059 /* RawProcessSample.swift */; };
 		A0000000000000000000005A /* ProcessTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000005B /* ProcessTreeNode.swift */; };
 		A0000000000000000000005C /* ProcessTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000005D /* ProcessTreeBuilder.swift */; };
@@ -79,7 +78,6 @@
 		A00000000000000000000051 /* DefaultSelectionPlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DefaultSelectionPlanner.swift; path = Sources/MemoryToastCore/DefaultSelectionPlanner.swift; sourceTree = SOURCE_ROOT; };
 		A00000000000000000000053 /* AlertPresentationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlertPresentationPolicy.swift; path = Sources/MemoryToastCore/AlertPresentationPolicy.swift; sourceTree = SOURCE_ROOT; };
 		A00000000000000000000055 /* LocalizationSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationSupport.swift; sourceTree = "<group>"; };
-		A00000000000000000000057 /* WelcomeGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeGuideView.swift; sourceTree = "<group>"; };
 		A00000000000000000000059 /* RawProcessSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RawProcessSample.swift; path = Sources/MemoryToastCore/RawProcessSample.swift; sourceTree = SOURCE_ROOT; };
 		A0000000000000000000005B /* ProcessTreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProcessTreeNode.swift; path = Sources/MemoryToastCore/ProcessTreeNode.swift; sourceTree = SOURCE_ROOT; };
 		A0000000000000000000005D /* ProcessTreeBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProcessTreeBuilder.swift; path = Sources/MemoryToastCore/ProcessTreeBuilder.swift; sourceTree = SOURCE_ROOT; };
@@ -141,7 +139,6 @@
 				A00000000000000000000049 /* AlertPanelView.swift */,
 				A0000000000000000000004F /* MenuBarContainerView.swift */,
 				A00000000000000000000055 /* LocalizationSupport.swift */,
-				A00000000000000000000057 /* WelcomeGuideView.swift */,
 				A0000000000000000000005F /* AppLifecycleController.swift */,
 				A00000000000000000000051 /* DefaultSelectionPlanner.swift */,
 				A00000000000000000000053 /* AlertPresentationPolicy.swift */,
@@ -301,7 +298,6 @@
 				A00000000000000000000050 /* DefaultSelectionPlanner.swift in Sources */,
 				A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */,
 				A00000000000000000000054 /* LocalizationSupport.swift in Sources */,
-				A00000000000000000000056 /* WelcomeGuideView.swift in Sources */,
 				A0000000000000000000005E /* AppLifecycleController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,8 +9,6 @@ struct MenuBarContainerView: View {
     @Binding var isIgnoringCurrentIncident: Bool
     let onSaveSettings: () -> Void
 
-    @State private var hasPresentedGuideInCurrentSession = false
-
     private let selectionPlanner = DefaultSelectionPlanner()
     private let presentationPolicy = AlertPresentationPolicy()
 
@@ -24,15 +22,11 @@ struct MenuBarContainerView: View {
             },
             onOpenSettings: {
                 presentSettingsWindow()
-            },
-            onOpenGuide: {
-                presentGuideWindow()
             }
         )
         .task(id: monitorLoopID) {
             viewModel.apply(settings: settings)
             alertSessionController.apply(settings: settings)
-            maybePresentGuideOnLaunch()
             await runMonitoringLoop()
         }
         .onChange(of: settings) { _, newSettings in
@@ -43,16 +37,7 @@ struct MenuBarContainerView: View {
 
     private var monitorLoopID: String {
         let ignoredSignature = settings.ignoredBundleIdentifiers.joined(separator: ",")
-        return "\(settings.detectionIntervalSeconds)-\(settings.defaultSelectedAppCount)-\(settings.forceQuitRevealDelaySeconds)-\(settings.relaunchDelaySeconds)-\(settings.snoozeUntil?.timeIntervalSince1970 ?? 0)-\(ignoredSignature)-\(settings.hasAcknowledgedSafetyGuide)"
-    }
-
-    private func maybePresentGuideOnLaunch() {
-        guard !settings.hasAcknowledgedSafetyGuide, !hasPresentedGuideInCurrentSession else {
-            return
-        }
-
-        hasPresentedGuideInCurrentSession = true
-        presentGuideWindow()
+        return "\(settings.detectionIntervalSeconds)-\(settings.defaultSelectedAppCount)-\(settings.forceQuitRevealDelaySeconds)-\(settings.relaunchDelaySeconds)-\(settings.snoozeUntil?.timeIntervalSince1970 ?? 0)-\(ignoredSignature)"
     }
 
     private func refreshAndMaybePresentAlert() {
@@ -143,9 +128,5 @@ struct MenuBarContainerView: View {
 
     private func presentSettingsWindow() {
         openWindow(id: "main-window")
-    }
-
-    private func presentGuideWindow() {
-        openWindow(id: "welcome-guide")
     }
 }

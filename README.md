@@ -160,8 +160,8 @@ Its goal is not to "clean memory." The app is designed to help you identify the 
 #### 1. First Launch
 
 - Launch the app and it stays in the macOS menu bar
-- On first launch, a safety guide window is shown once before normal use
-- `Settings` is the main window; when it is closed, the app remains in the menu bar and does not keep a persistent Dock presence
+- `Settings` is the main window; its top section explains the tool's purpose and the recommended quit flow
+- When `Settings` is closed, the app remains in the menu bar and does not keep a persistent Dock presence
 - The default detection interval is `30` seconds
 
 #### 2. Check Current Status
@@ -178,8 +178,8 @@ In the main `Settings` window, you can configure:
 - default selected app count
 - auto relaunch delay after a successful normal quit
 - countdown duration before force quit is exposed
-- available memory alert threshold
-- swap alert threshold
+- available memory alert threshold in `GB`
+- swap alert threshold in `GB`
 - language
 - and manually open the current alert panel from the top of the window
 

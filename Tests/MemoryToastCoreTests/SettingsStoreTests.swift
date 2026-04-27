@@ -17,7 +17,6 @@ final class SettingsStoreTests: XCTestCase {
         XCTAssertEqual(settings.swapUsedAlertThresholdBytes, 4_000_000_000)
         XCTAssertTrue(settings.ignoredBundleIdentifiers.isEmpty)
         XCTAssertNil(settings.snoozeUntil)
-        XCTAssertFalse(settings.hasAcknowledgedSafetyGuide)
         XCTAssertNil(settings.languageOverride)
     }
 
@@ -35,7 +34,6 @@ final class SettingsStoreTests: XCTestCase {
         settings.swapUsedAlertThresholdBytes = 6_000_000_000
         settings.ignoredBundleIdentifiers = ["com.apple.Safari", "com.tinyspeck.slackmacgap"]
         settings.snoozeUntil = Date(timeIntervalSince1970: 1_234_567)
-        settings.hasAcknowledgedSafetyGuide = true
         settings.languageOverride = .english
 
         store.save(settings)
@@ -50,7 +48,43 @@ final class SettingsStoreTests: XCTestCase {
         XCTAssertEqual(reloaded.swapUsedAlertThresholdBytes, 6_000_000_000)
         XCTAssertEqual(reloaded.ignoredBundleIdentifiers, ["com.apple.Safari", "com.tinyspeck.slackmacgap"])
         XCTAssertEqual(reloaded.snoozeUntil, Date(timeIntervalSince1970: 1_234_567))
-        XCTAssertTrue(reloaded.hasAcknowledgedSafetyGuide)
         XCTAssertEqual(reloaded.languageOverride, .english)
+    }
+
+    func testLoadIgnoresLegacySafetyGuideFlag() throws {
+        let defaults = UserDefaults(suiteName: #function)!
+        defaults.removePersistentDomain(forName: #function)
+        let store = SettingsStore(defaults: defaults)
+        defaults.set(
+            try XCTUnwrap(
+                """
+                {
+                  "detectionIntervalSeconds": 15,
+                  "defaultSelectedAppCount": 2,
+                  "relaunchDelaySeconds": 7,
+                  "forceQuitRevealDelaySeconds": 9,
+                  "availableMemoryAlertThresholdBytes": 3000000000,
+                  "swapUsedAlertThresholdBytes": 5000000000,
+                  "ignoredBundleIdentifiers": ["com.apple.Safari"],
+                  "snoozeUntil": 1234567,
+                  "hasAcknowledgedSafetyGuide": true,
+                  "languageOverride": "zh-Hans"
+                }
+                """.data(using: .utf8)
+            ),
+            forKey: "app_settings"
+        )
+
+        let loaded = store.load()
+
+        XCTAssertEqual(loaded.detectionIntervalSeconds, 15)
+        XCTAssertEqual(loaded.defaultSelectedAppCount, 2)
+        XCTAssertEqual(loaded.relaunchDelaySeconds, 7)
+        XCTAssertEqual(loaded.forceQuitRevealDelaySeconds, 9)
+        XCTAssertEqual(loaded.availableMemoryAlertThresholdBytes, 3_000_000_000)
+        XCTAssertEqual(loaded.swapUsedAlertThresholdBytes, 5_000_000_000)
+        XCTAssertEqual(loaded.ignoredBundleIdentifiers, ["com.apple.Safari"])
+        XCTAssertEqual(loaded.snoozeUntil, Date(timeIntervalSinceReferenceDate: 1_234_567))
+        XCTAssertEqual(loaded.languageOverride, .simplifiedChinese)
     }
 }

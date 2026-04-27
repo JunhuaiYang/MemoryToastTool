@@ -6,7 +6,6 @@
 "menu.action.run_check" = "Run Check Now";
 "menu.action.open_alert" = "Open Alert";
 "menu.action.open_settings" = "Open Settings";
-"menu.action.open_guide" = "Open Safety Guide";
 "menu.metric.used" = "Used";
 "menu.metric.available" = "Available";
 "menu.metric.swap" = "Swap";
@@ -21,8 +20,11 @@
 "settings.default_selected" = "Default selected app count";
 "settings.relaunch_delay" = "Relaunch delay (seconds)";
 "settings.force_quit_delay" = "Force quit reveal delay (seconds)";
-"settings.available_threshold" = "Available memory threshold (bytes)";
-"settings.swap_threshold" = "Swap usage threshold (bytes)";
+"settings.available_threshold" = "Available memory threshold (GB)";
+"settings.swap_threshold" = "Swap usage threshold (GB)";
+"settings.threshold_footer" = "Threshold values are entered in decimal gigabytes and stored internally in bytes.";
+"settings.intro.title" = "What This Tool Does";
+"settings.intro.body" = "Memory Toast Tool continuously samples macOS memory usage and shows a live process tree when available memory drops, swap grows, or memory pressure rises. You can review the heaviest roots and child processes, close selected targets gracefully, and only use force quit after the countdown if they are still alive. Configure the interval, default selection count, relaunch delay, and alert thresholds here.";
 "settings.language" = "Language";
 "settings.language.system" = "Follow System";
 "settings.ignored_apps" = "Ignored by default";
@@ -42,10 +44,3 @@
 "alert.action.snooze" = "Snooze 10m";
 "alert.action.quit_selected" = "Quit Selected";
 "alert.action.force_quit_selected" = "Force Quit Selected";
-"guide.title" = "Before You Use Memory Toast Tool";
-"guide.subtitle" = "This app helps you inspect memory-heavy processes safely. It does not fake cleanup or kill processes automatically.";
-"guide.point.gui_only" = "The list includes both app processes and background processes. System-root owners such as launchd and kernel_task are not shown as closable targets.";
-"guide.point.force_quit" = "Force quit is never automatic. It only appears after the countdown and only for apps still alive.";
-"guide.point.relaunch" = "Auto reopen only applies to apps that exit normally. Force-quit apps are not reopened.";
-"guide.point.no_fake_cleanup" = "This tool does not claim to clear cache, clean memory junk, or free system memory through unreliable tricks.";
-"guide.action.acknowledge" = "I Understand";

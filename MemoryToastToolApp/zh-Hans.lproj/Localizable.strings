@@ -6,7 +6,6 @@
 "menu.action.run_check" = "立即检测";
 "menu.action.open_alert" = "打开告警面板";
 "menu.action.open_settings" = "打开设置";
-"menu.action.open_guide" = "打开安全说明";
 "menu.metric.used" = "已用";
 "menu.metric.available" = "可用";
 "menu.metric.swap" = "Swap";
@@ -21,8 +20,11 @@
 "settings.default_selected" = "默认勾选数量";
 "settings.relaunch_delay" = "自动重开延迟（秒）";
 "settings.force_quit_delay" = "强杀按钮显示延迟（秒）";
-"settings.available_threshold" = "可用内存阈值（字节）";
-"settings.swap_threshold" = "Swap 阈值（字节）";
+"settings.available_threshold" = "可用内存阈值（GB）";
+"settings.swap_threshold" = "Swap 阈值（GB）";
+"settings.threshold_footer" = "阈值按十进制 GB 输入，内部仍以字节保存并参与规则计算。";
+"settings.intro.title" = "工具功能与使用方式";
+"settings.intro.body" = "Memory Toast Tool 会持续采样 macOS 的内存、Swap 和内存压力，在命中阈值时展示实时更新的进程树，帮助你快速定位占用最高的根进程和子进程。你可以先尝试正常退出勾选项，倒计时结束后再决定是否强制退出仍存活的目标。这里可配置检测周期、默认勾选数量、自动重开延迟以及告警阈值。";
 "settings.language" = "语言";
 "settings.language.system" = "跟随系统";
 "settings.ignored_apps" = "默认不勾选";
@@ -42,10 +44,3 @@
 "alert.action.snooze" = "稍后 10 分钟";
 "alert.action.quit_selected" = "退出所选";
 "alert.action.force_quit_selected" = "强制退出所选";
-"guide.title" = "开始使用前先看一下";
-"guide.subtitle" = "这个工具只帮助你更安全地查看和处理高内存进程，不会伪造清理效果，也不会自动强杀进程。";
-"guide.point.gui_only" = "列表会同时包含应用进程和后台进程，但不会把 launchd、kernel_task 这类系统根进程当作可直接关闭的目标。";
-"guide.point.force_quit" = "强杀永远不会自动执行。只有倒计时结束后，且目标 App 仍存活时才会显示。";
-"guide.point.relaunch" = "自动重开只针对正常退出成功的 App；被强杀的 App 不会自动重开。";
-"guide.point.no_fake_cleanup" = "这个工具不会声称自己能通过“清缓存”“清内存垃圾”之类不可靠手段释放系统内存。";
-"guide.action.acknowledge" = "我知道了";
