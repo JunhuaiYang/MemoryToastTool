@@ -11,6 +11,7 @@ This spec updates the V1 design in three areas:
 - process memory accounting must include child processes and background processes
 - the alert panel must present a collapsible process tree instead of a flat GUI-only list
 - the app settings experience must become the app's main window, with menu bar residency preserved when the window closes
+- memory-summary ownership must shift so that rich incident details live in the alert panel instead of the menu bar
 
 The goal is to make memory reporting materially more accurate, allow the user to inspect and act on process hierarchies directly, and make configuration reachable through a normal app window.
 
@@ -150,6 +151,36 @@ Product interpretation:
 - the app's steady-state presence is menu bar only
 - the main window is an on-demand configuration surface
 
+### 3.9 Settings Window Action
+
+The settings main window must include a top-level button that opens the alert panel directly.
+
+Behavior:
+
+- the button is always available
+- it may open the alert panel even when no alert rule is currently matched
+- in that case, the alert panel still shows the current memory snapshot and current process tree
+
+This makes the alert panel usable as a manual inspection surface, not only as an automatic incident response surface.
+
+### 3.10 Information Placement
+
+The menu bar panel and alert panel now have distinct responsibilities.
+
+Menu bar panel:
+
+- show current memory information only
+- do not show matched rules
+- do not show the top high-memory app list
+
+Alert panel:
+
+- must show current memory information at the top
+- must show currently matched rule reasons at the top
+- must show the process tree below
+
+This change centralizes incident context inside the alert panel and keeps the menu bar panel lighter.
+
 ## 4. UX Details
 
 ### 4.1 Alert Tree Presentation
@@ -169,6 +200,12 @@ Recommended presentation behavior:
 - the tree should preserve readability under dense process hierarchies
 - a child process should remain individually selectable even after inheriting selection from a parent
 
+Above the tree, the alert panel header area must show:
+
+- current memory summary
+- matched rule reasons
+- countdown / force-quit status when applicable
+
 ### 4.2 Dynamic Updates During Countdown
 
 The existing live countdown behavior must extend to the tree model:
@@ -183,10 +220,28 @@ The existing live countdown behavior must extend to the tree model:
 The settings main window should:
 
 - reuse the current settings form instead of inventing a separate home screen
+- include a top-level action for opening the alert panel manually
 - open as the primary app window
 - be reachable from menu bar actions and Dock activation
 
 No extra dashboard or landing page is required.
+
+### 4.4 Menu Bar Panel UX
+
+The menu bar panel should become simpler than the alert panel.
+
+It should show:
+
+- current system memory metrics
+- manual refresh action
+- open alert action
+- open settings action
+- open guide action if retained
+
+It should not show:
+
+- matched rule reason details
+- top high-memory process summaries
 
 ## 5. Architecture Changes
 
@@ -248,6 +303,14 @@ Responsibilities:
 
 The implementation should preserve the existing settings form as content rather than reworking the whole settings UI.
 
+### 5.6 Presentation Responsibility Split
+
+The view-model and presentation code should be adjusted so that:
+
+- menu bar view models focus on current memory summary and status only
+- alert panel state carries both current memory snapshot data and matched rule reasons for display
+- manual alert-panel opening from Settings can present the current tree even when there is no active alert incident
+
 ## 6. Testing Strategy
 
 The change must be protected with targeted tests.
@@ -264,6 +327,9 @@ Minimum required coverage:
 - refresh removes exited nodes and recomputes aggregate memory correctly
 - force quit targets only originally selected still-alive nodes
 - settings window is reachable from the menu bar entry path
+- settings window can open the alert panel without an active rule match
+- alert panel displays current memory summary and matched rule reasons in its header area
+- menu bar panel no longer renders rule reasons or top-process summaries
 
 If a specific Dock activation behavior cannot be unit-tested cleanly, the implementation should still isolate that wiring enough to keep the logic reviewable.
 
@@ -294,4 +360,5 @@ The next implementation plan should cover:
 4. background-process action support
 5. alert panel tree UI conversion
 6. settings main-window wiring and menu access
-7. regression and new test coverage
+7. alert-header and menu-bar information split
+8. regression and new test coverage
