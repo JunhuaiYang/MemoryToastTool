@@ -34,6 +34,10 @@
 		A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000053 /* AlertPresentationPolicy.swift */; };
 		A00000000000000000000054 /* LocalizationSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000055 /* LocalizationSupport.swift */; };
 		A00000000000000000000056 /* WelcomeGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000057 /* WelcomeGuideView.swift */; };
+		A00000000000000000000058 /* RawProcessSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000059 /* RawProcessSample.swift */; };
+		A0000000000000000000005A /* ProcessTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000005B /* ProcessTreeNode.swift */; };
+		A0000000000000000000005C /* ProcessTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000005D /* ProcessTreeBuilder.swift */; };
+		A0000000000000000000005E /* AppLifecycleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000005F /* AppLifecycleController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +80,10 @@
 		A00000000000000000000053 /* AlertPresentationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlertPresentationPolicy.swift; path = Sources/MemoryToastCore/AlertPresentationPolicy.swift; sourceTree = SOURCE_ROOT; };
 		A00000000000000000000055 /* LocalizationSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationSupport.swift; sourceTree = "<group>"; };
 		A00000000000000000000057 /* WelcomeGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeGuideView.swift; sourceTree = "<group>"; };
+		A00000000000000000000059 /* RawProcessSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RawProcessSample.swift; path = Sources/MemoryToastCore/RawProcessSample.swift; sourceTree = SOURCE_ROOT; };
+		A0000000000000000000005B /* ProcessTreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProcessTreeNode.swift; path = Sources/MemoryToastCore/ProcessTreeNode.swift; sourceTree = SOURCE_ROOT; };
+		A0000000000000000000005D /* ProcessTreeBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProcessTreeBuilder.swift; path = Sources/MemoryToastCore/ProcessTreeBuilder.swift; sourceTree = SOURCE_ROOT; };
+		A0000000000000000000005F /* AppLifecycleController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLifecycleController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +127,9 @@
 				A00000000000000000000033 /* RuleEvaluator.swift */,
 				A00000000000000000000035 /* SystemMemorySampling.swift */,
 				A00000000000000000000037 /* ProcessSampling.swift */,
+				A00000000000000000000059 /* RawProcessSample.swift */,
+				A0000000000000000000005B /* ProcessTreeNode.swift */,
+				A0000000000000000000005D /* ProcessTreeBuilder.swift */,
 				A00000000000000000000039 /* MemoryMonitor.swift */,
 				A0000000000000000000003B /* AppActionService.swift */,
 				A0000000000000000000003D /* AppRelaunchService.swift */,
@@ -131,6 +142,7 @@
 				A0000000000000000000004F /* MenuBarContainerView.swift */,
 				A00000000000000000000055 /* LocalizationSupport.swift */,
 				A00000000000000000000057 /* WelcomeGuideView.swift */,
+				A0000000000000000000005F /* AppLifecycleController.swift */,
 				A00000000000000000000051 /* DefaultSelectionPlanner.swift */,
 				A00000000000000000000053 /* AlertPresentationPolicy.swift */,
 				A0000000000000000000004B /* Localizable.strings */,
@@ -273,6 +285,9 @@
 				A00000000000000000000032 /* RuleEvaluator.swift in Sources */,
 				A00000000000000000000034 /* SystemMemorySampling.swift in Sources */,
 				A00000000000000000000036 /* ProcessSampling.swift in Sources */,
+				A00000000000000000000058 /* RawProcessSample.swift in Sources */,
+				A0000000000000000000005A /* ProcessTreeNode.swift in Sources */,
+				A0000000000000000000005C /* ProcessTreeBuilder.swift in Sources */,
 				A00000000000000000000038 /* MemoryMonitor.swift in Sources */,
 				A0000000000000000000003A /* AppActionService.swift in Sources */,
 				A0000000000000000000003C /* AppRelaunchService.swift in Sources */,
@@ -287,6 +302,7 @@
 				A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */,
 				A00000000000000000000054 /* LocalizationSupport.swift in Sources */,
 				A00000000000000000000056 /* WelcomeGuideView.swift in Sources */,
+				A0000000000000000000005E /* AppLifecycleController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

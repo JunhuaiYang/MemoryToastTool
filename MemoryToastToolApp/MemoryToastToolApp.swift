@@ -2,6 +2,8 @@ import SwiftUI
 
 @main
 struct MemoryToastToolApp: App {
+    @NSApplicationDelegateAdaptor(AppLifecycleController.self) private var appLifecycleController
+
     private let settingsStore: SettingsStore
     @State private var settings: AppSettings
     @State private var isIgnoringCurrentIncident = false
@@ -28,27 +30,29 @@ struct MemoryToastToolApp: App {
     }
 
     var body: some Scene {
+        Window("Settings", id: "main-window") {
+            SettingsView(
+                settings: $settings,
+                onSave: saveSettings,
+                onOpenAlert: presentCurrentAlertPanel
+            )
+            .onAppear {
+                appLifecycleController.mainWindowDidOpen()
+            }
+            .onDisappear {
+                appLifecycleController.mainWindowDidClose()
+            }
+        }
+        .defaultSize(width: 460, height: 540)
+        .windowResizability(.contentSize)
+
         MenuBarExtra(localizedString("menu.title", language: settings.languageOverride), systemImage: "memorychip") {
             MenuBarContainerView(
                 viewModel: menuBarViewModel,
                 alertSessionController: alertSessionController,
                 settings: $settings,
                 isIgnoringCurrentIncident: $isIgnoringCurrentIncident,
-                onSaveSettings: {
-                    settingsStore.save(settings)
-                    menuBarViewModel.apply(settings: settings)
-                    alertSessionController.apply(settings: settings)
-                }
-            )
-        }
-        Settings {
-            SettingsView(
-                settings: $settings,
-                onSave: {
-                    settingsStore.save(settings)
-                    menuBarViewModel.apply(settings: settings)
-                    alertSessionController.apply(settings: settings)
-                }
+                onSaveSettings: saveSettings
             )
         }
         WindowGroup(id: "memory-alert") {
@@ -56,11 +60,7 @@ struct MemoryToastToolApp: App {
                 controller: alertSessionController,
                 settings: $settings,
                 isIgnoringCurrentIncident: $isIgnoringCurrentIncident,
-                onSaveSettings: {
-                    settingsStore.save(settings)
-                    menuBarViewModel.apply(settings: settings)
-                    alertSessionController.apply(settings: settings)
-                }
+                onSaveSettings: saveSettings
             )
         }
         .defaultSize(width: 520, height: 360)
@@ -69,14 +69,34 @@ struct MemoryToastToolApp: App {
         WindowGroup(id: "welcome-guide") {
             WelcomeGuideView(
                 settings: $settings,
-                onSave: {
-                    settingsStore.save(settings)
-                    menuBarViewModel.apply(settings: settings)
-                    alertSessionController.apply(settings: settings)
-                }
+                onSave: saveSettings
             )
         }
         .defaultSize(width: 560, height: 340)
         .windowResizability(.contentSize)
+    }
+
+    private func saveSettings() {
+        settingsStore.save(settings)
+        menuBarViewModel.apply(settings: settings)
+        alertSessionController.apply(settings: settings)
+    }
+
+    private func presentCurrentAlertPanel() async {
+        guard let (snapshot, _, reasons) = await menuBarViewModel.refreshAndBuildAlertPayload() else {
+            return
+        }
+
+        let selectedPIDs = DefaultSelectionPlanner().selectDefaultPIDs(
+            from: snapshot.processes,
+            count: settings.defaultSelectedAppCount,
+            ignoredBundleIdentifiers: settings.ignoredBundleIdentifiers
+        )
+
+        alertSessionController.present(
+            snapshot: snapshot,
+            matchedReasons: reasons,
+            selectedPIDs: selectedPIDs
+        )
     }
 }

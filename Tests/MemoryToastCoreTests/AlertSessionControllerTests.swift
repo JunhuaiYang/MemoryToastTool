@@ -132,6 +132,17 @@ final class AlertSessionControllerTests: XCTestCase {
         XCTAssertEqual(controller.selectionState(for: 100), .partiallySelected)
     }
 
+    func testPresentStoresSnapshotAndMatchedReasonsForHeaderDisplay() async throws {
+        let controller = makeController()
+        let snapshot = makeTreeSnapshot()
+        let reasons: [TriggeredRuleReason] = [.availableMemoryBelow(bytes: 1_000)]
+
+        controller.present(snapshot: snapshot, matchedReasons: reasons, selectedPIDs: [100])
+
+        XCTAssertEqual(controller.state.snapshot, snapshot)
+        XCTAssertEqual(controller.state.matchedReasons, reasons)
+    }
+
     private func makeController() -> AlertSessionController {
         AlertSessionController(
             countdownSeconds: 10,

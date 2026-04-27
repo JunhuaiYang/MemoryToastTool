@@ -3,10 +3,9 @@
 "menu.status.warning" = "警告";
 "menu.status.critical" = "严重";
 "menu.loading" = "正在读取内存快照...";
-"menu.top_apps" = "高占用 App";
-"menu.no_apps" = "未发现正在运行的 GUI App";
 "menu.action.run_check" = "立即检测";
 "menu.action.open_alert" = "打开告警面板";
+"menu.action.open_settings" = "打开设置";
 "menu.action.open_guide" = "打开安全说明";
 "menu.metric.used" = "已用";
 "menu.metric.available" = "可用";
@@ -29,9 +28,10 @@
 "settings.ignored_apps" = "默认不勾选";
 "settings.ignored_none" = "当前没有忽略项";
 "settings.clear_snooze" = "清除稍后提醒";
+"settings.action.open_alert" = "打开告警面板";
 "settings.save" = "保存";
 "alert.title" = "内存压力过高";
-"alert.selection_count %lld" = "已勾选 %lld 个 App";
+"alert.selection_count %lld" = "已勾选 %lld 个进程";
 "alert.countdown %lld" = "还需等待 %lld 秒后才显示强杀按钮";
 "alert.snoozed_until %@" = "已稍后提醒至 %@";
 "alert.force_quit_ready" = "倒计时已结束，现在可以强制退出仍未关闭的 App。";
@@ -43,8 +43,8 @@
 "alert.action.quit_selected" = "退出所选";
 "alert.action.force_quit_selected" = "强制退出所选";
 "guide.title" = "开始使用前先看一下";
-"guide.subtitle" = "这个工具只帮助你更安全地处理高内存 GUI App，不会伪造清理效果，也不会自动强杀进程。";
-"guide.point.gui_only" = "列表里只显示正在运行的 GUI App，不会管理后台 daemon 或系统服务。";
+"guide.subtitle" = "这个工具只帮助你更安全地查看和处理高内存进程，不会伪造清理效果，也不会自动强杀进程。";
+"guide.point.gui_only" = "列表会同时包含应用进程和后台进程，但不会把 launchd、kernel_task 这类系统根进程当作可直接关闭的目标。";
 "guide.point.force_quit" = "强杀永远不会自动执行。只有倒计时结束后，且目标 App 仍存活时才会显示。";
 "guide.point.relaunch" = "自动重开只针对正常退出成功的 App；被强杀的 App 不会自动重开。";
 "guide.point.no_fake_cleanup" = "这个工具不会声称自己能通过“清缓存”“清内存垃圾”之类不可靠手段释放系统内存。";

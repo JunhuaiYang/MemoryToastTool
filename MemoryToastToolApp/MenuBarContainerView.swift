@@ -20,7 +20,10 @@ struct MenuBarContainerView: View {
             settings: settings,
             onRefresh: refreshAndMaybePresentAlert,
             onOpenAlert: {
-                presentAlertWindow()
+                presentCurrentAlertWindow()
+            },
+            onOpenSettings: {
+                presentSettingsWindow()
             },
             onOpenGuide: {
                 presentGuideWindow()
@@ -81,7 +84,7 @@ struct MenuBarContainerView: View {
         }
 
         if isAlertActive {
-            alertSessionController.refreshProcesses(snapshot.processes)
+            alertSessionController.refresh(snapshot: snapshot, matchedReasons: reasons)
         }
 
         guard presentationPolicy.shouldPresentAlert(
@@ -96,6 +99,7 @@ struct MenuBarContainerView: View {
 
         alertSessionController.present(
             snapshot: snapshot,
+            matchedReasons: reasons,
             selectedPIDs: selectionPlanner.selectDefaultPIDs(
                 from: snapshot.processes,
                 count: settings.defaultSelectedAppCount,
@@ -116,6 +120,29 @@ struct MenuBarContainerView: View {
 
     private func presentAlertWindow() {
         openWindow(id: "memory-alert")
+    }
+
+    private func presentCurrentAlertWindow() {
+        Task {
+            guard let (snapshot, _, reasons) = await viewModel.refreshAndBuildAlertPayload() else {
+                return
+            }
+
+            alertSessionController.present(
+                snapshot: snapshot,
+                matchedReasons: reasons,
+                selectedPIDs: selectionPlanner.selectDefaultPIDs(
+                    from: viewModel.latestDisplayProcesses,
+                    count: settings.defaultSelectedAppCount,
+                    ignoredBundleIdentifiers: settings.ignoredBundleIdentifiers
+                )
+            )
+            presentAlertWindow()
+        }
+    }
+
+    private func presentSettingsWindow() {
+        openWindow(id: "main-window")
     }
 
     private func presentGuideWindow() {

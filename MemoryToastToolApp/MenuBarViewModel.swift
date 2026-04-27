@@ -8,6 +8,7 @@ final class MenuBarViewModel: ObservableObject {
     private var activeRules: [AlertRule] = []
 
     @Published var latestSnapshot: MemorySnapshot?
+    @Published var latestTreeRoots: [ProcessTreeNode] = []
     @Published var latestReasons: [TriggeredRuleReason] = []
     @Published var isRefreshing = false
 
@@ -23,8 +24,8 @@ final class MenuBarViewModel: ObservableObject {
         latestSnapshot?.pressureLevel ?? .normal
     }
 
-    var topProcesses: [ProcessSample] {
-        Array((latestSnapshot?.processes ?? []).prefix(5))
+    var latestDisplayProcesses: [ProcessSample] {
+        latestSnapshot?.processes ?? []
     }
 
     func apply(settings: AppSettings) {
@@ -45,9 +46,21 @@ final class MenuBarViewModel: ObservableObject {
         do {
             let snapshot = try await monitor.sample()
             latestSnapshot = snapshot
+            latestTreeRoots = snapshot.processTreeRoots
             latestReasons = ruleEvaluator.evaluate(snapshot: snapshot, rules: rules).matches
         } catch {
+            latestTreeRoots = []
             latestReasons = []
         }
+    }
+
+    func refreshAndBuildAlertPayload() async -> (MemorySnapshot, [ProcessTreeNode], [TriggeredRuleReason])? {
+        await refresh()
+
+        guard let snapshot = latestSnapshot else {
+            return nil
+        }
+
+        return (snapshot, latestTreeRoots, latestReasons)
     }
 }

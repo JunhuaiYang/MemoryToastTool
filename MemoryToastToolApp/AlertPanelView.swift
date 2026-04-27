@@ -16,145 +16,31 @@ struct AlertPanelView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 6) {
-                Text(localizedString("alert.title", language: language))
-                    .font(.title3.weight(.semibold))
+            headerSection
 
-                Text(localizedFormat("alert.selection_count %lld", language: language, controller.state.selectedPIDs.count))
-                    .foregroundStyle(.secondary)
-
-                if controller.state.phase == .quitRequested {
-                    ProgressView(
-                        value: Double(progressCompletedSeconds),
-                        total: Double(max(1, controller.state.countdownTotalSeconds))
-                    )
-                    .controlSize(.large)
-
-                    Text(localizedFormat("alert.countdown %lld", language: language, controller.state.countdownRemaining))
-                        .foregroundStyle(.secondary)
-                } else if controller.state.phase == .forceQuitAvailable {
-                    Text(localizedString("alert.force_quit_ready", language: language))
-                        .foregroundStyle(.secondary)
-                } else if let snoozeUntil = settings.snoozeUntil, snoozeUntil > Date() {
-                    Text(
-                        localizedFormat(
-                            "alert.snoozed_until %@",
-                            language: language,
-                            snoozeUntil.formatted(date: .omitted, time: .shortened)
-                        )
-                    )
-                    .foregroundStyle(.secondary)
-                }
-            }
-
-            List(controller.state.visibleProcesses) { process in
-                HStack(spacing: 12) {
-                    Toggle(
-                        "",
-                        isOn: Binding(
-                            get: { controller.state.selectedPIDs.contains(process.pid) },
-                            set: { controller.setSelected(pid: process.pid, isSelected: $0) }
-                        )
-                    )
-                    .labelsHidden()
-                    .toggleStyle(.checkbox)
-                    .disabled(controller.state.isSelectionLocked)
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(process.appName)
-                            .font(.body.weight(.medium))
-                        Text("PID \(process.pid)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Spacer()
-
-                    Text(ByteCountFormatter.string(fromByteCount: Int64(process.memoryBytes), countStyle: .memory))
-                        .foregroundStyle(.secondary)
-                        .monospacedDigit()
-                        .frame(minWidth: 92, alignment: .trailing)
-
-                    Toggle(
-                        localizedString("alert.ignore_by_default", language: language),
-                        isOn: Binding(
-                            get: { isIgnoredByDefault(process) },
-                            set: { setIgnoredByDefault(for: process, isIgnored: $0) }
-                        )
-                    )
-                    .toggleStyle(.checkbox)
-                    .labelsHidden()
-                    .disabled(controller.state.isSelectionLocked || process.bundleIdentifier == nil)
-
-                    Text(localizedString("alert.ignore_by_default", language: language))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    Toggle(
-                        localizedString("alert.relaunch_after_quit", language: language),
-                        isOn: Binding(
-                            get: { controller.state.relaunchAfterQuitPIDs.contains(process.pid) },
-                            set: { controller.setRelaunchAfterQuit(pid: process.pid, isEnabled: $0) }
-                        )
-                    )
-                    .toggleStyle(.checkbox)
-                    .labelsHidden()
-                    .disabled(
-                        controller.state.isSelectionLocked ||
-                        process.bundleIdentifier == nil ||
-                        !controller.state.selectedPIDs.contains(process.pid)
-                    )
-
-                    Text(localizedString("alert.relaunch_after_quit", language: language))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .opacity(controller.state.isSelectionLocked ? 0.6 : 1)
-            }
-            .overlay {
-                if controller.state.visibleProcesses.isEmpty {
-                    ContentUnavailableView(localizedString("alert.no_processes", language: language), systemImage: "checkmark.circle")
-                }
-            }
-
-            HStack {
-                Button(localizedString("alert.action.ignore_once", language: language)) {
-                    isIgnoringCurrentIncident = true
-                    controller.dismiss()
-                    dismiss()
-                }
-                .disabled(controller.state.phase == .quitRequested)
-
-                Button(localizedString("alert.action.snooze", language: language)) {
-                    isIgnoringCurrentIncident = false
-                    settings.snoozeUntil = Date().addingTimeInterval(snoozeDurationSeconds)
-                    onSaveSettings()
-                    controller.dismiss()
-                    dismiss()
-                }
-                .disabled(controller.state.phase == .quitRequested)
-
-                Spacer()
-
-                Button(localizedString("alert.action.quit_selected", language: language)) {
-                    Task {
-                        await controller.requestQuitSelected()
-                    }
-                }
-                .disabled(controller.state.isSelectionLocked || controller.state.selectedPIDs.isEmpty)
-
-                if controller.state.phase == .forceQuitAvailable {
-                    Button(localizedString("alert.action.force_quit_selected", language: language)) {
-                        Task {
-                            await controller.forceQuitSelected()
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 8) {
+                    if controller.state.visibleTreeRoots.isEmpty {
+                        ContentUnavailableView(localizedString("alert.no_processes", language: language), systemImage: "checkmark.circle")
+                    } else {
+                        ForEach(controller.state.visibleTreeRoots) { root in
+                            ProcessTreeRow(
+                                node: root,
+                                depth: 0,
+                                controller: controller,
+                                settings: $settings,
+                                language: language,
+                                onSaveSettings: onSaveSettings
+                            )
                         }
                     }
-                    .disabled(controller.state.forceQuitPIDs.isEmpty)
                 }
             }
+
+            actionBar
         }
         .padding(20)
-        .frame(minWidth: 680, minHeight: 360)
+        .frame(minWidth: 760, minHeight: 420)
         .task(id: controller.state.phase) {
             if controller.state.phase == .quitRequested {
                 controller.startCountdown()
@@ -172,6 +58,115 @@ struct AlertPanelView: View {
         }
     }
 
+    private var headerSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(localizedString("alert.title", language: language))
+                .font(.title3.weight(.semibold))
+
+            Text(localizedFormat("alert.selection_count %lld", language: language, controller.state.selectedPIDs.count))
+                .foregroundStyle(.secondary)
+
+            if let snapshot = controller.state.snapshot {
+                Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 8) {
+                    GridRow {
+                        metricCell(
+                            title: localizedString("menu.metric.used", language: language),
+                            value: ByteCountFormatter.string(fromByteCount: Int64(snapshot.usedMemoryBytes), countStyle: .memory)
+                        )
+                        metricCell(
+                            title: localizedString("menu.metric.available", language: language),
+                            value: ByteCountFormatter.string(fromByteCount: Int64(snapshot.availableMemoryBytes), countStyle: .memory)
+                        )
+                    }
+                    GridRow {
+                        metricCell(
+                            title: localizedString("menu.metric.swap", language: language),
+                            value: ByteCountFormatter.string(fromByteCount: Int64(snapshot.swapUsedBytes), countStyle: .memory)
+                        )
+                        metricCell(
+                            title: localizedString("menu.metric.pressure", language: language),
+                            value: localizedPressureLevel(snapshot.pressureLevel, language: language)
+                        )
+                    }
+                }
+            }
+
+            if !controller.state.matchedReasons.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(localizedString("menu.reasons", language: language))
+                        .font(.subheadline.weight(.semibold))
+
+                    ForEach(Array(controller.state.matchedReasons.enumerated()), id: \.offset) { _, reason in
+                        Text(localizedRuleReason(reason, language: language))
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
+            if controller.state.phase == .quitRequested {
+                ProgressView(
+                    value: Double(progressCompletedSeconds),
+                    total: Double(max(1, controller.state.countdownTotalSeconds))
+                )
+                .controlSize(.large)
+
+                Text(localizedFormat("alert.countdown %lld", language: language, controller.state.countdownRemaining))
+                    .foregroundStyle(.secondary)
+            } else if controller.state.phase == .forceQuitAvailable {
+                Text(localizedString("alert.force_quit_ready", language: language))
+                    .foregroundStyle(.secondary)
+            } else if let snoozeUntil = settings.snoozeUntil, snoozeUntil > Date() {
+                Text(
+                    localizedFormat(
+                        "alert.snoozed_until %@",
+                        language: language,
+                        snoozeUntil.formatted(date: .omitted, time: .shortened)
+                    )
+                )
+                .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private var actionBar: some View {
+        HStack {
+            Button(localizedString("alert.action.ignore_once", language: language)) {
+                isIgnoringCurrentIncident = true
+                controller.dismiss()
+                dismiss()
+            }
+            .disabled(controller.state.phase == .quitRequested)
+
+            Button(localizedString("alert.action.snooze", language: language)) {
+                isIgnoringCurrentIncident = false
+                settings.snoozeUntil = Date().addingTimeInterval(snoozeDurationSeconds)
+                onSaveSettings()
+                controller.dismiss()
+                dismiss()
+            }
+            .disabled(controller.state.phase == .quitRequested)
+
+            Spacer()
+
+            Button(localizedString("alert.action.quit_selected", language: language)) {
+                Task {
+                    await controller.requestQuitSelected()
+                }
+            }
+            .disabled(controller.state.isSelectionLocked || controller.state.selectedPIDs.isEmpty)
+
+            if controller.state.phase == .forceQuitAvailable {
+                Button(localizedString("alert.action.force_quit_selected", language: language)) {
+                    Task {
+                        await controller.forceQuitSelected()
+                    }
+                }
+                .disabled(controller.state.forceQuitPIDs.isEmpty)
+            }
+        }
+    }
+
     private var countdownTotalSeconds: Int {
         max(controller.state.countdownTotalSeconds, 1)
     }
@@ -180,15 +175,147 @@ struct AlertPanelView: View {
         max(0, countdownTotalSeconds - controller.state.countdownRemaining)
     }
 
-    private func isIgnoredByDefault(_ process: ProcessSample) -> Bool {
-        guard let bundleIdentifier = process.bundleIdentifier else {
+    @ViewBuilder
+    private func metricCell(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.callout.weight(.medium))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct ProcessTreeRow: View {
+    let node: ProcessTreeNode
+    let depth: Int
+    @ObservedObject var controller: AlertSessionController
+    @Binding var settings: AppSettings
+    let language: AppLanguage?
+    let onSaveSettings: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .center, spacing: 10) {
+                expandButton
+                selectionButton
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(node.processName)
+                        .font(.body.weight(.medium))
+                    Text("PID \(node.pid)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Text(displayedMemory)
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+                    .frame(minWidth: 92, alignment: .trailing)
+
+                Toggle(
+                    localizedString("alert.ignore_by_default", language: language),
+                    isOn: Binding(
+                        get: { isIgnoredByDefault },
+                        set: { setIgnoredByDefault($0) }
+                    )
+                )
+                .toggleStyle(.checkbox)
+                .labelsHidden()
+                .disabled(controller.state.isSelectionLocked || node.bundleIdentifier == nil)
+
+                Toggle(
+                    localizedString("alert.relaunch_after_quit", language: language),
+                    isOn: Binding(
+                        get: { controller.state.relaunchAfterQuitPIDs.contains(node.pid) },
+                        set: { controller.setRelaunchAfterQuit(pid: node.pid, isEnabled: $0) }
+                    )
+                )
+                .toggleStyle(.checkbox)
+                .labelsHidden()
+                .disabled(
+                    controller.state.isSelectionLocked ||
+                    node.bundleIdentifier == nil ||
+                    !controller.state.selectedPIDs.contains(node.pid)
+                )
+            }
+            .padding(.leading, CGFloat(depth) * 18)
+            .opacity(controller.state.isSelectionLocked ? 0.6 : 1)
+
+            if controller.isExpanded(pid: node.pid) {
+                ForEach(node.children) { child in
+                    ProcessTreeRow(
+                        node: child,
+                        depth: depth + 1,
+                        controller: controller,
+                        settings: $settings,
+                        language: language,
+                        onSaveSettings: onSaveSettings
+                    )
+                }
+            }
+        }
+    }
+
+    private var displayedMemory: String {
+        let bytes = depth == 0 ? node.aggregateMemoryBytes : node.memoryBytes
+        return ByteCountFormatter.string(fromByteCount: Int64(bytes), countStyle: .memory)
+    }
+
+    private var expandButton: some View {
+        Group {
+            if node.children.isEmpty {
+                Color.clear
+                    .frame(width: 14, height: 14)
+            } else {
+                Button {
+                    controller.toggleExpanded(pid: node.pid)
+                } label: {
+                    Image(systemName: controller.isExpanded(pid: node.pid) ? "chevron.down" : "chevron.right")
+                        .font(.caption.weight(.semibold))
+                }
+                .buttonStyle(.plain)
+                .frame(width: 14, height: 14)
+            }
+        }
+    }
+
+    private var selectionButton: some View {
+        Button {
+            let nextSelected = controller.selectionState(for: node.pid) != .selected
+            controller.setSelected(pid: node.pid, isSelected: nextSelected)
+        } label: {
+            Image(systemName: selectionImageName)
+                .font(.body)
+        }
+        .buttonStyle(.plain)
+        .disabled(controller.state.isSelectionLocked)
+    }
+
+    private var selectionImageName: String {
+        switch controller.selectionState(for: node.pid) {
+        case .unselected:
+            return "square"
+        case .selected:
+            return "checkmark.square.fill"
+        case .partiallySelected:
+            return "minus.square.fill"
+        }
+    }
+
+    private var isIgnoredByDefault: Bool {
+        guard let bundleIdentifier = node.bundleIdentifier else {
             return false
         }
         return settings.ignoredBundleIdentifiers.contains(bundleIdentifier)
     }
 
-    private func setIgnoredByDefault(for process: ProcessSample, isIgnored: Bool) {
-        guard let bundleIdentifier = process.bundleIdentifier else {
+    private func setIgnoredByDefault(_ isIgnored: Bool) {
+        guard let bundleIdentifier = node.bundleIdentifier else {
             return
         }
 
@@ -196,7 +323,7 @@ struct AlertPanelView: View {
             if !settings.ignoredBundleIdentifiers.contains(bundleIdentifier) {
                 settings.ignoredBundleIdentifiers.append(bundleIdentifier)
             }
-            controller.setSelected(pid: process.pid, isSelected: false)
+            controller.setSelected(pid: node.pid, isSelected: false)
         } else {
             settings.ignoredBundleIdentifiers.removeAll { $0 == bundleIdentifier }
         }

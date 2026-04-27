@@ -5,6 +5,7 @@ struct MenuBarView: View {
     let settings: AppSettings
     let onRefresh: () -> Void
     let onOpenAlert: () -> Void
+    let onOpenSettings: () -> Void
     let onOpenGuide: () -> Void
 
     private var language: AppLanguage? {
@@ -26,43 +27,6 @@ struct MenuBarView: View {
                     .foregroundStyle(.secondary)
             }
 
-            if !viewModel.latestReasons.isEmpty {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(localizedString("menu.reasons", language: language))
-                        .font(.subheadline.weight(.semibold))
-
-                    ForEach(Array(viewModel.latestReasons.enumerated()), id: \.offset) { _, reason in
-                        Text(localizedRuleReason(reason, language: language))
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-
-            Divider()
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text(localizedString("menu.top_apps", language: language))
-                    .font(.subheadline.weight(.semibold))
-
-                if viewModel.topProcesses.isEmpty {
-                    Text(localizedString("menu.no_apps", language: language))
-                        .foregroundStyle(.secondary)
-                        .font(.footnote)
-                } else {
-                    ForEach(viewModel.topProcesses) { process in
-                        HStack {
-                            Text(process.appName)
-                                .lineLimit(1)
-                            Spacer()
-                            Text(ByteCountFormatter.string(fromByteCount: Int64(process.memoryBytes), countStyle: .memory))
-                                .foregroundStyle(.secondary)
-                        }
-                        .font(.footnote)
-                    }
-                }
-            }
-
             Divider()
 
             HStack {
@@ -70,6 +34,7 @@ struct MenuBarView: View {
                 Button(localizedString("menu.action.open_alert", language: language), action: onOpenAlert)
             }
 
+            Button(localizedString("menu.action.open_settings", language: language), action: onOpenSettings)
             Button(localizedString("menu.action.open_guide", language: language), action: onOpenGuide)
 
             Text(localizedFormat("menu.interval %lld", language: language, settings.detectionIntervalSeconds))

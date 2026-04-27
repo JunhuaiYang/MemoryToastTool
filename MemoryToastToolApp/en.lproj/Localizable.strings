@@ -3,10 +3,9 @@
 "menu.status.warning" = "Warning";
 "menu.status.critical" = "Critical";
 "menu.loading" = "Loading memory snapshot...";
-"menu.top_apps" = "Top Apps";
-"menu.no_apps" = "No running GUI apps detected";
 "menu.action.run_check" = "Run Check Now";
 "menu.action.open_alert" = "Open Alert";
+"menu.action.open_settings" = "Open Settings";
 "menu.action.open_guide" = "Open Safety Guide";
 "menu.metric.used" = "Used";
 "menu.metric.available" = "Available";
@@ -29,9 +28,10 @@
 "settings.ignored_apps" = "Ignored by default";
 "settings.ignored_none" = "No ignored apps";
 "settings.clear_snooze" = "Clear Snooze";
+"settings.action.open_alert" = "Open Alert Panel";
 "settings.save" = "Save";
 "alert.title" = "Memory pressure is high";
-"alert.selection_count %lld" = "%lld apps selected";
+"alert.selection_count %lld" = "%lld processes selected";
 "alert.countdown %lld" = "Waiting %llds before force quit becomes available";
 "alert.snoozed_until %@" = "Snoozed until %@";
 "alert.force_quit_ready" = "Countdown finished. You can now force quit the remaining apps.";
@@ -43,8 +43,8 @@
 "alert.action.quit_selected" = "Quit Selected";
 "alert.action.force_quit_selected" = "Force Quit Selected";
 "guide.title" = "Before You Use Memory Toast Tool";
-"guide.subtitle" = "This app helps you close memory-heavy GUI apps safely. It does not fake cleanup or kill processes automatically.";
-"guide.point.gui_only" = "Only running GUI apps are listed. Background daemons and system services are not managed here.";
+"guide.subtitle" = "This app helps you inspect memory-heavy processes safely. It does not fake cleanup or kill processes automatically.";
+"guide.point.gui_only" = "The list includes both app processes and background processes. System-root owners such as launchd and kernel_task are not shown as closable targets.";
 "guide.point.force_quit" = "Force quit is never automatic. It only appears after the countdown and only for apps still alive.";
 "guide.point.relaunch" = "Auto reopen only applies to apps that exit normally. Force-quit apps are not reopened.";
 "guide.point.no_fake_cleanup" = "This tool does not claim to clear cache, clean memory junk, or free system memory through unreliable tricks.";

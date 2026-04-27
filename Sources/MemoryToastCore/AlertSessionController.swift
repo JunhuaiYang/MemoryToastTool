@@ -41,7 +41,11 @@ public final class AlertSessionController: ObservableObject {
         relaunchDelaySeconds = max(0, settings.relaunchDelaySeconds)
     }
 
-    public func present(snapshot: MemorySnapshot, selectedPIDs: [Int32]) {
+    public func present(
+        snapshot: MemorySnapshot,
+        matchedReasons: [TriggeredRuleReason] = [],
+        selectedPIDs: [Int32]
+    ) {
         countdownTask?.cancel()
         hasScheduledRelaunch = false
 
@@ -53,7 +57,7 @@ public final class AlertSessionController: ObservableObject {
 
         state.phase = .presenting
         state.snapshot = snapshot
-        state.matchedReasons = []
+        state.matchedReasons = matchedReasons
         state.selectedPIDs = orderedSelection
         state.originalSelectedPIDs = orderedSelection
         state.forceQuitPIDs = []
@@ -115,12 +119,10 @@ public final class AlertSessionController: ObservableObject {
         state.countdownRemaining = countdownSeconds
         state.countdownTotalSeconds = countdownSeconds
 
-        let selectedBundleIdentifiers = state.visibleProcesses
-            .filter { state.selectedPIDs.contains($0.pid) }
-            .compactMap(\.bundleIdentifier)
+        let selectedProcesses = state.visibleProcesses.filter { state.selectedPIDs.contains($0.pid) }
 
-        for bundleIdentifier in selectedBundleIdentifiers {
-            try? await appActionService.requestQuit(bundleIdentifier: bundleIdentifier)
+        for process in selectedProcesses {
+            try? await appActionService.requestQuit(pid: process.pid, bundleIdentifier: process.bundleIdentifier)
         }
     }
 
@@ -160,6 +162,36 @@ public final class AlertSessionController: ObservableObject {
     public func refreshProcesses(_ processes: [ProcessSample]) {
         let visibleProcesses = processes.filter(\.isRunning)
         state.visibleProcesses = visibleProcesses
+        state.visibleTreeRoots = visibleProcesses.map { process in
+            ProcessTreeNode(
+                pid: process.pid,
+                parentPID: process.parentPID,
+                processName: process.appName,
+                bundleIdentifier: process.bundleIdentifier,
+                memoryBytes: process.memoryBytes,
+                aggregateMemoryBytes: process.aggregateMemoryBytes,
+                isRunning: process.isRunning,
+                children: []
+            )
+        }
+        bundleIdentifiersByPID.merge(dictionaryByPID(from: visibleProcesses)) { current, _ in current }
+
+        if !state.isSelectionLocked {
+            state.selectedPIDs = orderedPIDs(state.selectedPIDs, within: visibleProcesses)
+            state.relaunchAfterQuitPIDs = orderedPIDs(state.relaunchAfterQuitPIDs, within: visibleProcesses)
+        }
+
+        completeIfNeeded(alivePIDs: Set(visibleProcesses.map(\.pid)))
+    }
+
+    public func refresh(snapshot: MemorySnapshot, matchedReasons: [TriggeredRuleReason]) {
+        let visibleTreeRoots = effectiveTreeRoots(from: snapshot).filter(\.isRunning)
+        let visibleProcesses = flatten(visibleTreeRoots)
+
+        state.snapshot = snapshot
+        state.matchedReasons = matchedReasons
+        state.visibleTreeRoots = visibleTreeRoots
+        state.visibleProcesses = visibleProcesses
         bundleIdentifiersByPID.merge(dictionaryByPID(from: visibleProcesses)) { current, _ in current }
 
         if !state.isSelectionLocked {
@@ -192,10 +224,10 @@ public final class AlertSessionController: ObservableObject {
         state.forceQuitRequestedPIDs = state.forceQuitPIDs
 
         for pid in state.forceQuitPIDs {
-            guard let bundleIdentifier = visibleByPID[pid]?.bundleIdentifier else {
+            guard let process = visibleByPID[pid] else {
                 continue
             }
-            try? await appActionService.forceQuit(bundleIdentifier: bundleIdentifier)
+            try? await appActionService.forceQuit(pid: pid, bundleIdentifier: process.bundleIdentifier)
         }
     }
 
@@ -219,6 +251,18 @@ public final class AlertSessionController: ObservableObject {
             return .selected
         }
         return .partiallySelected
+    }
+
+    public func isExpanded(pid: Int32) -> Bool {
+        state.expandedPIDs.contains(pid)
+    }
+
+    public func toggleExpanded(pid: Int32) {
+        if state.expandedPIDs.contains(pid) {
+            state.expandedPIDs.remove(pid)
+        } else {
+            state.expandedPIDs.insert(pid)
+        }
     }
 
     public func relaunch(bundleIdentifier: String) {
