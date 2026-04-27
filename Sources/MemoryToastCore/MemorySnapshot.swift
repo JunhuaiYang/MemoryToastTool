@@ -27,6 +27,7 @@ public struct MemorySnapshot: Equatable, Sendable {
     public let availableMemoryBytes: UInt64
     public let swapUsedBytes: UInt64
     public let pressureLevel: MemoryPressureLevel
+    public let processTreeRoots: [ProcessTreeNode]
     public let processes: [ProcessSample]
 
     public var usedMemoryRatio: Double {
@@ -43,6 +44,7 @@ public struct MemorySnapshot: Equatable, Sendable {
         availableMemoryBytes: UInt64,
         swapUsedBytes: UInt64,
         pressureLevel: MemoryPressureLevel,
+        processTreeRoots: [ProcessTreeNode] = [],
         processes: [ProcessSample]
     ) {
         self.totalMemoryBytes = totalMemoryBytes
@@ -50,6 +52,7 @@ public struct MemorySnapshot: Equatable, Sendable {
         self.availableMemoryBytes = availableMemoryBytes
         self.swapUsedBytes = swapUsedBytes
         self.pressureLevel = pressureLevel
+        self.processTreeRoots = processTreeRoots
         self.processes = processes
     }
 }

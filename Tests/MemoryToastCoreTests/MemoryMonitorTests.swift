@@ -2,7 +2,7 @@ import XCTest
 @testable import MemoryToastCore
 
 final class MemoryMonitorTests: XCTestCase {
-    func testMonitorReturnsProcessesSortedByMemoryDescending() async throws {
+    func testMonitorReturnsRootsSortedByAggregateMemoryDescending() async throws {
         let systemSampler = StubSystemMemorySampler(
             snapshot: SystemMemorySample(
                 totalMemoryBytes: 36_000,
@@ -12,18 +12,22 @@ final class MemoryMonitorTests: XCTestCase {
                 pressureLevel: .warning
             )
         )
-        let processSampler = StubProcessSampler(processes: [
-            ProcessSample(pid: 1, appName: "Slack", bundleIdentifier: "slack", memoryBytes: 200, isRunning: true),
-            ProcessSample(pid: 2, appName: "Chrome", bundleIdentifier: "chrome", memoryBytes: 900, isRunning: true),
-            ProcessSample(pid: 3, appName: "Xcode", bundleIdentifier: "xcode", memoryBytes: 600, isRunning: true)
+        let processSampler = StubProcessSampler(rawProcesses: [
+            RawProcessSample(pid: 1, ppid: 0, processName: "launchd", bundleIdentifier: nil, memoryBytes: 0, isRunning: true),
+            RawProcessSample(pid: 10, ppid: 1, processName: "App A", bundleIdentifier: "a", memoryBytes: 100, isRunning: true),
+            RawProcessSample(pid: 11, ppid: 10, processName: "App A Helper", bundleIdentifier: nil, memoryBytes: 700, isRunning: true),
+            RawProcessSample(pid: 20, ppid: 1, processName: "App B", bundleIdentifier: "b", memoryBytes: 500, isRunning: true),
         ])
 
         let snapshot = try await MemoryMonitor(
             systemSampler: systemSampler,
-            processSampler: processSampler
+            processSampler: processSampler,
+            treeBuilder: ProcessTreeBuilder(systemRootNames: ["launchd", "kernel_task"])
         ).sample()
 
-        XCTAssertEqual(snapshot.processes.map(\.appName), ["Chrome", "Xcode", "Slack"])
+        XCTAssertEqual(snapshot.processes.map(\.pid), [10, 20])
+        XCTAssertEqual(snapshot.processes.map(\.aggregateMemoryBytes), [800, 500])
+        XCTAssertEqual(snapshot.processTreeRoots.map(\.pid), [10, 20])
         XCTAssertEqual(snapshot.pressureLevel, .warning)
     }
 }
@@ -33,13 +37,5 @@ private struct StubSystemMemorySampler: SystemMemorySampling {
 
     func sampleSystemMemory() async throws -> SystemMemorySample {
         snapshot
-    }
-}
-
-private struct StubProcessSampler: ProcessSampling {
-    let processes: [ProcessSample]
-
-    func sampleProcesses() async throws -> [ProcessSample] {
-        processes
     }
 }

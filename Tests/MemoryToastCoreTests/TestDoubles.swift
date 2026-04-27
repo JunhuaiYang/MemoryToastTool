@@ -1,6 +1,14 @@
 import Foundation
 @testable import MemoryToastCore
 
+struct StubProcessSampler: ProcessSampling {
+    let rawProcesses: [RawProcessSample]
+
+    func sampleProcesses() async throws -> [RawProcessSample] {
+        rawProcesses
+    }
+}
+
 final class StubWorkspaceController: @unchecked Sendable, WorkspaceControlling {
     var quitRequests: [String] = []
     var forceQuitRequests: [String] = []

@@ -3,20 +3,33 @@ import Foundation
 public struct MemoryMonitor: Sendable {
     public let systemSampler: SystemMemorySampling
     public let processSampler: ProcessSampling
+    public let treeBuilder: ProcessTreeBuilder
 
     public init(
         systemSampler: SystemMemorySampling = LiveSystemMemorySampler(),
-        processSampler: ProcessSampling = LiveProcessSampler()
+        processSampler: ProcessSampling = LiveProcessSampler(),
+        treeBuilder: ProcessTreeBuilder = ProcessTreeBuilder()
     ) {
         self.systemSampler = systemSampler
         self.processSampler = processSampler
+        self.treeBuilder = treeBuilder
     }
 
     public func sample() async throws -> MemorySnapshot {
         let system = try await systemSampler.sampleSystemMemory()
-        let processSamples = try await processSampler.sampleProcesses()
-        let sortedProcesses = processSamples.sorted { lhs, rhs in
-            lhs.memoryBytes > rhs.memoryBytes
+        let rawProcesses = try await processSampler.sampleProcesses()
+        let processTreeRoots = treeBuilder.buildTree(from: rawProcesses)
+        let sortedProcesses = processTreeRoots.map { root in
+            ProcessSample(
+                pid: root.pid,
+                parentPID: root.parentPID,
+                appName: root.processName,
+                bundleIdentifier: root.bundleIdentifier,
+                memoryBytes: root.memoryBytes,
+                aggregateMemoryBytes: root.aggregateMemoryBytes,
+                isRunning: root.isRunning,
+                childPIDs: root.children.map(\.pid)
+            )
         }
 
         return MemorySnapshot(
@@ -25,6 +38,7 @@ public struct MemoryMonitor: Sendable {
             availableMemoryBytes: system.availableMemoryBytes,
             swapUsedBytes: system.swapUsedBytes,
             pressureLevel: system.pressureLevel,
+            processTreeRoots: processTreeRoots,
             processes: sortedProcesses
         )
     }
