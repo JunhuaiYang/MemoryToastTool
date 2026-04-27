@@ -6,6 +6,7 @@
 "menu.action.run_check" = "立即检测";
 "menu.action.open_alert" = "打开告警面板";
 "menu.action.open_settings" = "打开设置";
+"menu.action.quit" = "退出";
 "menu.metric.used" = "已用";
 "menu.metric.available" = "可用";
 "menu.metric.swap" = "Swap";

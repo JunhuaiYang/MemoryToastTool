@@ -6,6 +6,7 @@ struct MenuBarView: View {
     let onRefresh: () -> Void
     let onOpenAlert: () -> Void
     let onOpenSettings: () -> Void
+    let onQuit: () -> Void
 
     private var language: AppLanguage? {
         settings.languageOverride
@@ -34,6 +35,10 @@ struct MenuBarView: View {
             }
 
             Button(localizedString("menu.action.open_settings", language: language), action: onOpenSettings)
+
+            Divider()
+
+            Button(localizedString("menu.action.quit", language: language), action: onQuit)
 
             Text(localizedFormat("menu.interval %lld", language: language, settings.detectionIntervalSeconds))
                 .font(.footnote)

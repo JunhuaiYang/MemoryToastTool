@@ -37,6 +37,7 @@
 		A0000000000000000000005A /* ProcessTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000005B /* ProcessTreeNode.swift */; };
 		A0000000000000000000005C /* ProcessTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000005D /* ProcessTreeBuilder.swift */; };
 		A0000000000000000000005E /* AppLifecycleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000005F /* AppLifecycleController.swift */; };
+		A00000000000000000000060 /* SingleInstancePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000061 /* SingleInstancePolicy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,7 @@
 		A0000000000000000000005B /* ProcessTreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProcessTreeNode.swift; path = Sources/MemoryToastCore/ProcessTreeNode.swift; sourceTree = SOURCE_ROOT; };
 		A0000000000000000000005D /* ProcessTreeBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProcessTreeBuilder.swift; path = Sources/MemoryToastCore/ProcessTreeBuilder.swift; sourceTree = SOURCE_ROOT; };
 		A0000000000000000000005F /* AppLifecycleController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLifecycleController.swift; sourceTree = "<group>"; };
+		A00000000000000000000061 /* SingleInstancePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SingleInstancePolicy.swift; path = Sources/MemoryToastCore/SingleInstancePolicy.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 				A00000000000000000000059 /* RawProcessSample.swift */,
 				A0000000000000000000005B /* ProcessTreeNode.swift */,
 				A0000000000000000000005D /* ProcessTreeBuilder.swift */,
+				A00000000000000000000061 /* SingleInstancePolicy.swift */,
 				A00000000000000000000039 /* MemoryMonitor.swift */,
 				A0000000000000000000003B /* AppActionService.swift */,
 				A0000000000000000000003D /* AppRelaunchService.swift */,
@@ -298,6 +301,7 @@
 				A00000000000000000000050 /* DefaultSelectionPlanner.swift in Sources */,
 				A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */,
 				A00000000000000000000054 /* LocalizationSupport.swift in Sources */,
+				A00000000000000000000060 /* SingleInstancePolicy.swift in Sources */,
 				A0000000000000000000005E /* AppLifecycleController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

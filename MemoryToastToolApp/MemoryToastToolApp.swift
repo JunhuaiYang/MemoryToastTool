@@ -55,7 +55,7 @@ struct MemoryToastToolApp: App {
                 onSaveSettings: saveSettings
             )
         }
-        WindowGroup(id: "memory-alert") {
+        Window("Alert", id: "memory-alert") {
             AlertPanelView(
                 controller: alertSessionController,
                 settings: $settings,

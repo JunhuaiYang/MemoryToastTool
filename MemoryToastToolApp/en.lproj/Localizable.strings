@@ -6,6 +6,7 @@
 "menu.action.run_check" = "Run Check Now";
 "menu.action.open_alert" = "Open Alert";
 "menu.action.open_settings" = "Open Settings";
+"menu.action.quit" = "Quit";
 "menu.metric.used" = "Used";
 "menu.metric.available" = "Available";
 "menu.metric.swap" = "Swap";

@@ -22,6 +22,9 @@ struct MenuBarContainerView: View {
             },
             onOpenSettings: {
                 presentSettingsWindow()
+            },
+            onQuit: {
+                quitApplication()
             }
         )
         .task(id: monitorLoopID) {
@@ -128,5 +131,9 @@ struct MenuBarContainerView: View {
 
     private func presentSettingsWindow() {
         openWindow(id: "main-window")
+    }
+
+    private func quitApplication() {
+        NSApp.terminate(nil)
     }
 }
