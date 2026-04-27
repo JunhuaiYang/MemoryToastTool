@@ -9,6 +9,12 @@ public enum AlertPhase: Equatable, Sendable {
     case dismissed
 }
 
+public enum TreeSelectionState: Equatable, Sendable {
+    case unselected
+    case selected
+    case partiallySelected
+}
+
 public struct AlertSessionState: Equatable, Sendable {
     public var phase: AlertPhase
     public var selectedPIDs: [Int32]
@@ -17,6 +23,10 @@ public struct AlertSessionState: Equatable, Sendable {
     public var forceQuitRequestedPIDs: [Int32]
     public var relaunchAfterQuitPIDs: [Int32]
     public var visibleProcesses: [ProcessSample]
+    public var visibleTreeRoots: [ProcessTreeNode]
+    public var expandedPIDs: Set<Int32>
+    public var matchedReasons: [TriggeredRuleReason]
+    public var snapshot: MemorySnapshot?
     public var isSelectionLocked: Bool
     public var countdownRemaining: Int
     public var countdownTotalSeconds: Int
@@ -29,6 +39,10 @@ public struct AlertSessionState: Equatable, Sendable {
         forceQuitRequestedPIDs: [Int32] = [],
         relaunchAfterQuitPIDs: [Int32] = [],
         visibleProcesses: [ProcessSample] = [],
+        visibleTreeRoots: [ProcessTreeNode] = [],
+        expandedPIDs: Set<Int32> = [],
+        matchedReasons: [TriggeredRuleReason] = [],
+        snapshot: MemorySnapshot? = nil,
         isSelectionLocked: Bool = false,
         countdownRemaining: Int = 0,
         countdownTotalSeconds: Int = 0
@@ -40,6 +54,10 @@ public struct AlertSessionState: Equatable, Sendable {
         self.forceQuitRequestedPIDs = forceQuitRequestedPIDs
         self.relaunchAfterQuitPIDs = relaunchAfterQuitPIDs
         self.visibleProcesses = visibleProcesses
+        self.visibleTreeRoots = visibleTreeRoots
+        self.expandedPIDs = expandedPIDs
+        self.matchedReasons = matchedReasons
+        self.snapshot = snapshot
         self.isSelectionLocked = isSelectionLocked
         self.countdownRemaining = countdownRemaining
         self.countdownTotalSeconds = countdownTotalSeconds

@@ -115,6 +115,23 @@ final class AlertSessionControllerTests: XCTestCase {
         XCTAssertEqual(controller.state.visibleProcesses.map(\.pid), [8, 9])
     }
 
+    func testSelectingParentSelectsAllDescendants() async throws {
+        let controller = makeController()
+
+        controller.present(snapshot: makeTreeSnapshot(), selectedPIDs: [100])
+
+        XCTAssertEqual(Set(controller.state.selectedPIDs), [100, 101, 102])
+    }
+
+    func testChildOnlySelectionMarksParentPartiallySelected() async throws {
+        let controller = makeController()
+
+        controller.present(snapshot: makeTreeSnapshot(), selectedPIDs: [])
+        controller.setSelected(pid: 102, isSelected: true)
+
+        XCTAssertEqual(controller.selectionState(for: 100), .partiallySelected)
+    }
+
     private func makeController() -> AlertSessionController {
         AlertSessionController(
             countdownSeconds: 10,
@@ -135,6 +152,59 @@ final class AlertSessionControllerTests: XCTestCase {
                 ProcessSample(pid: 7, appName: "Chrome", bundleIdentifier: "chrome", memoryBytes: 6, isRunning: true),
                 ProcessSample(pid: 8, appName: "Slack", bundleIdentifier: "slack", memoryBytes: 5, isRunning: true),
                 ProcessSample(pid: 9, appName: "Arc", bundleIdentifier: "arc", memoryBytes: 4, isRunning: true)
+            ]
+        )
+    }
+
+    private func makeTreeSnapshot() -> MemorySnapshot {
+        let child = ProcessTreeNode(
+            pid: 102,
+            parentPID: 101,
+            processName: "Chrome GPU",
+            bundleIdentifier: nil,
+            memoryBytes: 3,
+            aggregateMemoryBytes: 3,
+            isRunning: true,
+            children: []
+        )
+        let helper = ProcessTreeNode(
+            pid: 101,
+            parentPID: 100,
+            processName: "Chrome Helper",
+            bundleIdentifier: nil,
+            memoryBytes: 4,
+            aggregateMemoryBytes: 7,
+            isRunning: true,
+            children: [child]
+        )
+        let root = ProcessTreeNode(
+            pid: 100,
+            parentPID: nil,
+            processName: "Chrome",
+            bundleIdentifier: "chrome",
+            memoryBytes: 5,
+            aggregateMemoryBytes: 12,
+            isRunning: true,
+            children: [helper]
+        )
+
+        return MemorySnapshot(
+            totalMemoryBytes: 20,
+            usedMemoryBytes: 12,
+            availableMemoryBytes: 8,
+            swapUsedBytes: 1,
+            pressureLevel: .warning,
+            processTreeRoots: [root],
+            processes: [
+                ProcessSample(
+                    pid: 100,
+                    appName: "Chrome",
+                    bundleIdentifier: "chrome",
+                    memoryBytes: 5,
+                    aggregateMemoryBytes: 12,
+                    isRunning: true,
+                    childPIDs: [101]
+                )
             ]
         )
     }

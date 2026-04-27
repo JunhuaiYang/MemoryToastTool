@@ -45,17 +45,23 @@ public final class AlertSessionController: ObservableObject {
         countdownTask?.cancel()
         hasScheduledRelaunch = false
 
-        let visibleProcesses = snapshot.processes.filter(\.isRunning)
-        let orderedSelection = orderedPIDs(selectedPIDs, within: visibleProcesses)
+        let visibleTreeRoots = effectiveTreeRoots(from: snapshot).filter(\.isRunning)
+        let visibleProcesses = flatten(visibleTreeRoots)
+        let expandedSelection = expandSelectionToDescendants(selectedPIDs, in: visibleTreeRoots)
+        let orderedSelection = orderedPIDs(expandedSelection, within: visibleProcesses)
         bundleIdentifiersByPID = dictionaryByPID(from: visibleProcesses)
 
         state.phase = .presenting
+        state.snapshot = snapshot
+        state.matchedReasons = []
         state.selectedPIDs = orderedSelection
         state.originalSelectedPIDs = orderedSelection
         state.forceQuitPIDs = []
         state.forceQuitRequestedPIDs = []
         state.relaunchAfterQuitPIDs = []
         state.visibleProcesses = visibleProcesses
+        state.visibleTreeRoots = visibleTreeRoots
+        state.expandedPIDs = []
         state.isSelectionLocked = false
         state.countdownRemaining = countdownSeconds
         state.countdownTotalSeconds = countdownSeconds
@@ -67,15 +73,18 @@ public final class AlertSessionController: ObservableObject {
         }
 
         var selected = Set(state.selectedPIDs)
+        let affectedPIDs = descendantPIDs(of: pid, in: state.visibleTreeRoots)
+
         if isSelected {
-            selected.insert(pid)
+            selected.formUnion(affectedPIDs)
         } else {
-            selected.remove(pid)
+            selected.subtract(affectedPIDs)
         }
 
         state.selectedPIDs = orderedPIDs(Array(selected), within: state.visibleProcesses)
         if !isSelected {
-            state.relaunchAfterQuitPIDs.removeAll { $0 == pid }
+            let affectedSet = Set(affectedPIDs)
+            state.relaunchAfterQuitPIDs.removeAll { affectedSet.contains($0) }
         }
     }
 
@@ -195,6 +204,23 @@ public final class AlertSessionController: ObservableObject {
         state.phase = .dismissed
     }
 
+    public func selectionState(for pid: Int32) -> TreeSelectionState {
+        let descendantPIDs = descendantPIDs(of: pid, in: state.visibleTreeRoots)
+        guard !descendantPIDs.isEmpty else {
+            return state.selectedPIDs.contains(pid) ? .selected : .unselected
+        }
+
+        let selectedPIDs = Set(state.selectedPIDs)
+        let selectedCount = descendantPIDs.filter { selectedPIDs.contains($0) }.count
+        if selectedCount == 0 {
+            return .unselected
+        }
+        if selectedCount == descendantPIDs.count {
+            return .selected
+        }
+        return .partiallySelected
+    }
+
     public func relaunch(bundleIdentifier: String) {
         relaunchService.relaunch(bundleIdentifier: bundleIdentifier)
     }
@@ -249,5 +275,78 @@ public final class AlertSessionController: ObservableObject {
             }
             return (process.pid, bundleIdentifier)
         })
+    }
+
+    private func effectiveTreeRoots(from snapshot: MemorySnapshot) -> [ProcessTreeNode] {
+        if !snapshot.processTreeRoots.isEmpty {
+            return snapshot.processTreeRoots
+        }
+
+        return snapshot.processes.map { process in
+            ProcessTreeNode(
+                pid: process.pid,
+                parentPID: process.parentPID,
+                processName: process.appName,
+                bundleIdentifier: process.bundleIdentifier,
+                memoryBytes: process.memoryBytes,
+                aggregateMemoryBytes: process.aggregateMemoryBytes,
+                isRunning: process.isRunning,
+                children: []
+            )
+        }
+    }
+
+    private func flatten(_ roots: [ProcessTreeNode]) -> [ProcessSample] {
+        roots.flatMap(flattenNode)
+    }
+
+    private func flattenNode(_ node: ProcessTreeNode) -> [ProcessSample] {
+        let process = ProcessSample(
+            pid: node.pid,
+            parentPID: node.parentPID,
+            appName: node.processName,
+            bundleIdentifier: node.bundleIdentifier,
+            memoryBytes: node.memoryBytes,
+            aggregateMemoryBytes: node.aggregateMemoryBytes,
+            isRunning: node.isRunning,
+            childPIDs: node.children.map(\.pid)
+        )
+
+        return [process] + node.children.flatMap(flattenNode)
+    }
+
+    private func expandSelectionToDescendants(_ pids: [Int32], in roots: [ProcessTreeNode]) -> [Int32] {
+        let expanded = Set(pids.flatMap { descendantPIDs(of: $0, in: roots) })
+        return Array(expanded)
+    }
+
+    private func descendantPIDs(of pid: Int32, in roots: [ProcessTreeNode]) -> [Int32] {
+        for root in roots {
+            if let descendantPIDs = descendantPIDs(of: pid, in: root) {
+                return descendantPIDs
+            }
+        }
+
+        return [pid]
+    }
+
+    private func descendantPIDs(of pid: Int32, in node: ProcessTreeNode) -> [Int32]? {
+        if node.pid == pid {
+            return [node.pid] + node.children.flatMap { child in
+                descendantPIDs(in: child)
+            }
+        }
+
+        for child in node.children {
+            if let descendantPIDs = descendantPIDs(of: pid, in: child) {
+                return descendantPIDs
+            }
+        }
+
+        return nil
+    }
+
+    private func descendantPIDs(in node: ProcessTreeNode) -> [Int32] {
+        [node.pid] + node.children.flatMap(descendantPIDs)
     }
 }

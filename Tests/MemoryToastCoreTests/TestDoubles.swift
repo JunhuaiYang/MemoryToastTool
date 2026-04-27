@@ -9,6 +9,19 @@ struct StubProcessSampler: ProcessSampling {
     }
 }
 
+final class StubProcessController: @unchecked Sendable, ProcessControlling {
+    var terminateRequests: [Int32] = []
+    var killRequests: [Int32] = []
+
+    func terminate(pid: Int32) async throws {
+        terminateRequests.append(pid)
+    }
+
+    func kill(pid: Int32) async throws {
+        killRequests.append(pid)
+    }
+}
+
 final class StubWorkspaceController: @unchecked Sendable, WorkspaceControlling {
     var quitRequests: [String] = []
     var forceQuitRequests: [String] = []
