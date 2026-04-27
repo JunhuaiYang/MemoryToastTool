@@ -29,6 +29,7 @@
 		A00000000000000000000048 /* AlertPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000049 /* AlertPanelView.swift */; };
 		A0000000000000000000004A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000004B /* Localizable.strings */; };
 		A0000000000000000000004C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000004D /* Localizable.strings */; };
+		A00000000000000000000062 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000063 /* Assets.xcassets */; };
 		A0000000000000000000004E /* MenuBarContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000004F /* MenuBarContainerView.swift */; };
 		A00000000000000000000050 /* DefaultSelectionPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000051 /* DefaultSelectionPlanner.swift */; };
 		A00000000000000000000052 /* AlertPresentationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000053 /* AlertPresentationPolicy.swift */; };
@@ -75,6 +76,7 @@
 		A00000000000000000000049 /* AlertPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPanelView.swift; sourceTree = "<group>"; };
 		A0000000000000000000004B /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A0000000000000000000004D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = zh-Hans.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A00000000000000000000063 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A0000000000000000000004F /* MenuBarContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarContainerView.swift; sourceTree = "<group>"; };
 		A00000000000000000000051 /* DefaultSelectionPlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DefaultSelectionPlanner.swift; path = Sources/MemoryToastCore/DefaultSelectionPlanner.swift; sourceTree = SOURCE_ROOT; };
 		A00000000000000000000053 /* AlertPresentationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlertPresentationPolicy.swift; path = Sources/MemoryToastCore/AlertPresentationPolicy.swift; sourceTree = SOURCE_ROOT; };
@@ -147,6 +149,7 @@
 				A00000000000000000000053 /* AlertPresentationPolicy.swift */,
 				A0000000000000000000004B /* Localizable.strings */,
 				A0000000000000000000004D /* Localizable.strings */,
+				A00000000000000000000063 /* Assets.xcassets */,
 			);
 			path = MemoryToastToolApp;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A00000000000000000000062 /* Assets.xcassets in Resources */,
 				A0000000000000000000004A /* Localizable.strings in Resources */,
 				A0000000000000000000004C /* Localizable.strings in Resources */,
 			);
