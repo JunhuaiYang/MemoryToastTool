@@ -6,6 +6,7 @@ public struct RawProcessSample: Equatable, Sendable {
     public let processName: String
     public let bundleIdentifier: String?
     public let memoryBytes: UInt64
+    public let didSampleMemory: Bool
     public let isRunning: Bool
 
     public init(
@@ -14,6 +15,7 @@ public struct RawProcessSample: Equatable, Sendable {
         processName: String,
         bundleIdentifier: String?,
         memoryBytes: UInt64,
+        didSampleMemory: Bool = true,
         isRunning: Bool
     ) {
         self.pid = pid
@@ -21,6 +23,7 @@ public struct RawProcessSample: Equatable, Sendable {
         self.processName = processName
         self.bundleIdentifier = bundleIdentifier
         self.memoryBytes = memoryBytes
+        self.didSampleMemory = didSampleMemory
         self.isRunning = isRunning
     }
 }

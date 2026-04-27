@@ -88,6 +88,28 @@ struct AlertPanelView: View {
                             value: localizedPressureLevel(snapshot.pressureLevel, language: language)
                         )
                     }
+                    GridRow {
+                        metricCell(
+                            title: localizedString("alert.metric.process_tree_total", language: language),
+                            value: ByteCountFormatter.string(fromByteCount: Int64(snapshot.processTreeMemoryBytes), countStyle: .memory)
+                        )
+                        metricCell(
+                            title: localizedString("alert.metric.unattributed_memory", language: language),
+                            value: ByteCountFormatter.string(fromByteCount: Int64(snapshot.unattributedMemoryBytes), countStyle: .memory)
+                        )
+                    }
+                }
+
+                if snapshot.failedProcessMemorySampleCount > 0 {
+                    Text(
+                        localizedFormat(
+                            "alert.memory_sampling_failures %lld",
+                            language: language,
+                            snapshot.failedProcessMemorySampleCount
+                        )
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                 }
             }
 

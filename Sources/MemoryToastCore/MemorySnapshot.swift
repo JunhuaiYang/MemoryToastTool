@@ -27,8 +27,19 @@ public struct MemorySnapshot: Equatable, Sendable {
     public let availableMemoryBytes: UInt64
     public let swapUsedBytes: UInt64
     public let pressureLevel: MemoryPressureLevel
+    public let failedProcessMemorySampleCount: Int
     public let processTreeRoots: [ProcessTreeNode]
     public let processes: [ProcessSample]
+
+    public var processTreeMemoryBytes: UInt64 {
+        processTreeRoots.reduce(0) { partialResult, root in
+            partialResult + root.aggregateMemoryBytes
+        }
+    }
+
+    public var unattributedMemoryBytes: UInt64 {
+        usedMemoryBytes > processTreeMemoryBytes ? usedMemoryBytes - processTreeMemoryBytes : 0
+    }
 
     public var usedMemoryRatio: Double {
         guard totalMemoryBytes > 0 else {
@@ -44,6 +55,7 @@ public struct MemorySnapshot: Equatable, Sendable {
         availableMemoryBytes: UInt64,
         swapUsedBytes: UInt64,
         pressureLevel: MemoryPressureLevel,
+        failedProcessMemorySampleCount: Int = 0,
         processTreeRoots: [ProcessTreeNode] = [],
         processes: [ProcessSample]
     ) {
@@ -52,6 +64,7 @@ public struct MemorySnapshot: Equatable, Sendable {
         self.availableMemoryBytes = availableMemoryBytes
         self.swapUsedBytes = swapUsedBytes
         self.pressureLevel = pressureLevel
+        self.failedProcessMemorySampleCount = failedProcessMemorySampleCount
         self.processTreeRoots = processTreeRoots
         self.processes = processes
     }

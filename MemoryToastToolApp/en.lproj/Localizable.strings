@@ -38,6 +38,9 @@
 "alert.countdown %lld" = "Waiting %llds before force quit becomes available";
 "alert.snoozed_until %@" = "Snoozed until %@";
 "alert.force_quit_ready" = "Countdown finished. You can now force quit the remaining apps.";
+"alert.metric.process_tree_total" = "Process tree total";
+"alert.metric.unattributed_memory" = "Unattributed";
+"alert.memory_sampling_failures %lld" = "%lld processes could not be sampled for memory. Their memory is not included in the tree total.";
 "alert.ignore_by_default" = "Ignore By Default";
 "alert.relaunch_after_quit" = "Reopen";
 "alert.no_processes" = "All selected apps have exited";

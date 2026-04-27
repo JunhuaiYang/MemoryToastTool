@@ -20,13 +20,15 @@ public struct LiveProcessSampler: ProcessSampling {
             }
 
             let runningApplication = runningApplications[pid]
+            let memorySample = residentMemorySample(for: pid)
 
             return RawProcessSample(
                 pid: pid,
                 ppid: processInfo.ppid,
                 processName: runningApplication?.localizedName ?? processInfo.name,
                 bundleIdentifier: runningApplication?.bundleIdentifier,
-                memoryBytes: residentMemoryBytes(for: pid),
+                memoryBytes: memorySample.bytes,
+                didSampleMemory: memorySample.didSampleMemory,
                 isRunning: true
             )
         }
@@ -76,7 +78,7 @@ public struct LiveProcessSampler: ProcessSampling {
         return (ppid: pid_t(info.pbi_ppid), name: name)
     }
 
-    private func residentMemoryBytes(for pid: pid_t) -> UInt64 {
+    private func residentMemorySample(for pid: pid_t) -> (bytes: UInt64, didSampleMemory: Bool) {
         var usage = rusage_info_v2()
         let result = withUnsafeMutablePointer(to: &usage) { pointer in
             pointer.withMemoryRebound(to: rusage_info_t?.self, capacity: 1) { reboundPointer in
@@ -85,9 +87,9 @@ public struct LiveProcessSampler: ProcessSampling {
         }
 
         guard result == 0 else {
-            return 0
+            return (0, false)
         }
 
-        return usage.ri_resident_size
+        return (usage.ri_resident_size, true)
     }
 }
