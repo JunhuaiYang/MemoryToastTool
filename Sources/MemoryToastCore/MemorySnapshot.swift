@@ -38,7 +38,8 @@ public struct MemorySnapshot: Equatable, Sendable {
     }
 
     public var unattributedMemoryBytes: UInt64 {
-        usedMemoryBytes > processTreeMemoryBytes ? usedMemoryBytes - processTreeMemoryBytes : 0
+        let totalAccountedMemoryBytes = usedMemoryBytes + swapUsedBytes
+        return totalAccountedMemoryBytes > processTreeMemoryBytes ? totalAccountedMemoryBytes - processTreeMemoryBytes : 0
     }
 
     public var usedMemoryRatio: Double {

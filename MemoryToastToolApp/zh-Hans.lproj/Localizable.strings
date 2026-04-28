@@ -37,7 +37,9 @@
 "alert.selection_count %lld" = "已勾选 %lld 个进程";
 "alert.countdown %lld" = "还需等待 %lld 秒后才显示强杀按钮";
 "alert.snoozed_until %@" = "已稍后提醒至 %@";
-"alert.force_quit_ready" = "倒计时已结束，现在可以强制退出仍未关闭的 App。";
+"alert.waiting_for_exit" = "正在等待所选进程自行退出；如果倒计时结束后仍有目标存活，会弹出独立的强杀确认框。";
+"alert.force_quit_prompt.title" = "仍有已勾选进程在运行";
+"alert.force_quit_prompt.message %lld" = "还有 %lld 个已勾选进程仍然存活，是否现在强制退出？";
 "alert.metric.process_tree_total" = "进程树合计";
 "alert.metric.unattributed_memory" = "未归因内存";
 "alert.memory_sampling_failures %lld" = "有 %lld 个进程的内存采样失败，这部分不会计入进程树合计。";
@@ -46,5 +48,6 @@
 "alert.no_processes" = "勾选的 App 已全部退出";
 "alert.action.ignore_once" = "本次忽略";
 "alert.action.snooze" = "稍后 10 分钟";
+"alert.action.continue_waiting" = "继续等待";
 "alert.action.quit_selected" = "退出所选";
 "alert.action.force_quit_selected" = "强制退出所选";

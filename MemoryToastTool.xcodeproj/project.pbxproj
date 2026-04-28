@@ -18,6 +18,8 @@
 		A00000000000000000000032 /* RuleEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000033 /* RuleEvaluator.swift */; };
 		A00000000000000000000034 /* SystemMemorySampling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000035 /* SystemMemorySampling.swift */; };
 		A00000000000000000000036 /* ProcessSampling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000037 /* ProcessSampling.swift */; };
+		A00000000000000000000064 /* ProcessMemorySample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000065 /* ProcessMemorySample.swift */; };
+		A00000000000000000000066 /* MonitoringCadence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000067 /* MonitoringCadence.swift */; };
 		A00000000000000000000038 /* MemoryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000039 /* MemoryMonitor.swift */; };
 		A0000000000000000000003A /* AppActionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000003B /* AppActionService.swift */; };
 		A0000000000000000000003C /* AppRelaunchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000003D /* AppRelaunchService.swift */; };
@@ -65,6 +67,8 @@
 		A00000000000000000000033 /* RuleEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RuleEvaluator.swift; path = Sources/MemoryToastCore/RuleEvaluator.swift; sourceTree = SOURCE_ROOT; };
 		A00000000000000000000035 /* SystemMemorySampling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SystemMemorySampling.swift; path = Sources/MemoryToastCore/SystemMemorySampling.swift; sourceTree = SOURCE_ROOT; };
 		A00000000000000000000037 /* ProcessSampling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProcessSampling.swift; path = Sources/MemoryToastCore/ProcessSampling.swift; sourceTree = SOURCE_ROOT; };
+		A00000000000000000000065 /* ProcessMemorySample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProcessMemorySample.swift; path = Sources/MemoryToastCore/ProcessMemorySample.swift; sourceTree = SOURCE_ROOT; };
+		A00000000000000000000067 /* MonitoringCadence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MonitoringCadence.swift; path = Sources/MemoryToastCore/MonitoringCadence.swift; sourceTree = SOURCE_ROOT; };
 		A00000000000000000000039 /* MemoryMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MemoryMonitor.swift; path = Sources/MemoryToastCore/MemoryMonitor.swift; sourceTree = SOURCE_ROOT; };
 		A0000000000000000000003B /* AppActionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppActionService.swift; path = Sources/MemoryToastCore/AppActionService.swift; sourceTree = SOURCE_ROOT; };
 		A0000000000000000000003D /* AppRelaunchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppRelaunchService.swift; path = Sources/MemoryToastCore/AppRelaunchService.swift; sourceTree = SOURCE_ROOT; };
@@ -129,6 +133,8 @@
 				A00000000000000000000033 /* RuleEvaluator.swift */,
 				A00000000000000000000035 /* SystemMemorySampling.swift */,
 				A00000000000000000000037 /* ProcessSampling.swift */,
+				A00000000000000000000065 /* ProcessMemorySample.swift */,
+				A00000000000000000000067 /* MonitoringCadence.swift */,
 				A00000000000000000000059 /* RawProcessSample.swift */,
 				A0000000000000000000005B /* ProcessTreeNode.swift */,
 				A0000000000000000000005D /* ProcessTreeBuilder.swift */,
@@ -289,6 +295,8 @@
 				A00000000000000000000032 /* RuleEvaluator.swift in Sources */,
 				A00000000000000000000034 /* SystemMemorySampling.swift in Sources */,
 				A00000000000000000000036 /* ProcessSampling.swift in Sources */,
+				A00000000000000000000064 /* ProcessMemorySample.swift in Sources */,
+				A00000000000000000000066 /* MonitoringCadence.swift in Sources */,
 				A00000000000000000000058 /* RawProcessSample.swift in Sources */,
 				A0000000000000000000005A /* ProcessTreeNode.swift in Sources */,
 				A0000000000000000000005C /* ProcessTreeBuilder.swift in Sources */,

@@ -63,12 +63,12 @@ public final class AlertSessionController: ObservableObject {
         state.forceQuitPIDs = []
         state.forceQuitRequestedPIDs = []
         state.relaunchAfterQuitPIDs = []
-        state.visibleProcesses = visibleProcesses
-        state.visibleTreeRoots = visibleTreeRoots
         state.expandedPIDs = []
         state.isSelectionLocked = false
+        state.isForceQuitConfirmationPresented = false
         state.countdownRemaining = countdownSeconds
         state.countdownTotalSeconds = countdownSeconds
+        updateVisibleState(with: visibleTreeRoots)
     }
 
     public func setSelected(pid: Int32, isSelected: Bool) {
@@ -86,6 +86,7 @@ public final class AlertSessionController: ObservableObject {
         }
 
         state.selectedPIDs = orderedPIDs(Array(selected), within: state.visibleProcesses)
+        updateVisibleState(with: state.visibleTreeRoots)
         if !isSelected {
             let affectedSet = Set(affectedPIDs)
             state.relaunchAfterQuitPIDs.removeAll { affectedSet.contains($0) }
@@ -116,6 +117,7 @@ public final class AlertSessionController: ObservableObject {
         state.isSelectionLocked = true
         state.originalSelectedPIDs = state.selectedPIDs
         state.forceQuitPIDs = []
+        state.isForceQuitConfirmationPresented = false
         state.countdownRemaining = countdownSeconds
         state.countdownTotalSeconds = countdownSeconds
 
@@ -160,9 +162,7 @@ public final class AlertSessionController: ObservableObject {
     }
 
     public func refreshProcesses(_ processes: [ProcessSample]) {
-        let visibleProcesses = processes.filter(\.isRunning)
-        state.visibleProcesses = visibleProcesses
-        state.visibleTreeRoots = visibleProcesses.map { process in
+        let visibleTreeRoots = processes.filter(\.isRunning).map { process in
             ProcessTreeNode(
                 pid: process.pid,
                 parentPID: process.parentPID,
@@ -174,32 +174,28 @@ public final class AlertSessionController: ObservableObject {
                 children: []
             )
         }
-        bundleIdentifiersByPID.merge(dictionaryByPID(from: visibleProcesses)) { current, _ in current }
+        updateVisibleState(with: visibleTreeRoots)
+        bundleIdentifiersByPID.merge(dictionaryByPID(from: state.visibleProcesses)) { current, _ in current }
 
         if !state.isSelectionLocked {
-            state.selectedPIDs = orderedPIDs(state.selectedPIDs, within: visibleProcesses)
-            state.relaunchAfterQuitPIDs = orderedPIDs(state.relaunchAfterQuitPIDs, within: visibleProcesses)
+            state.relaunchAfterQuitPIDs = orderedPIDs(state.relaunchAfterQuitPIDs, within: state.visibleProcesses)
         }
 
-        completeIfNeeded(alivePIDs: Set(visibleProcesses.map(\.pid)))
+        completeIfNeeded(alivePIDs: Set(state.visibleProcesses.map(\.pid)))
     }
 
     public func refresh(snapshot: MemorySnapshot, matchedReasons: [TriggeredRuleReason]) {
         let visibleTreeRoots = effectiveTreeRoots(from: snapshot).filter(\.isRunning)
-        let visibleProcesses = flatten(visibleTreeRoots)
-
         state.snapshot = snapshot
         state.matchedReasons = matchedReasons
-        state.visibleTreeRoots = visibleTreeRoots
-        state.visibleProcesses = visibleProcesses
-        bundleIdentifiersByPID.merge(dictionaryByPID(from: visibleProcesses)) { current, _ in current }
+        updateVisibleState(with: visibleTreeRoots)
+        bundleIdentifiersByPID.merge(dictionaryByPID(from: state.visibleProcesses)) { current, _ in current }
 
         if !state.isSelectionLocked {
-            state.selectedPIDs = orderedPIDs(state.selectedPIDs, within: visibleProcesses)
-            state.relaunchAfterQuitPIDs = orderedPIDs(state.relaunchAfterQuitPIDs, within: visibleProcesses)
+            state.relaunchAfterQuitPIDs = orderedPIDs(state.relaunchAfterQuitPIDs, within: state.visibleProcesses)
         }
 
-        completeIfNeeded(alivePIDs: Set(visibleProcesses.map(\.pid)))
+        completeIfNeeded(alivePIDs: Set(state.visibleProcesses.map(\.pid)))
     }
 
     public func finishCountdown() async {
@@ -208,7 +204,8 @@ public final class AlertSessionController: ObservableObject {
 
         let alive = Set(state.visibleProcesses.map(\.pid))
         state.forceQuitPIDs = state.originalSelectedPIDs.filter { alive.contains($0) }
-        state.phase = state.forceQuitPIDs.isEmpty ? .completed : .forceQuitAvailable
+        state.phase = state.forceQuitPIDs.isEmpty ? .completed : .waitingForQuitCompletion
+        state.isForceQuitConfirmationPresented = !state.forceQuitPIDs.isEmpty
 
         if state.phase == .completed {
             await scheduleRelaunchIfNeeded()
@@ -216,11 +213,12 @@ public final class AlertSessionController: ObservableObject {
     }
 
     public func forceQuitSelected() async {
-        guard state.phase == .forceQuitAvailable else {
+        guard !state.forceQuitPIDs.isEmpty else {
             return
         }
 
         let visibleByPID = Dictionary(uniqueKeysWithValues: state.visibleProcesses.map { ($0.pid, $0) })
+        state.isForceQuitConfirmationPresented = false
         state.forceQuitRequestedPIDs = state.forceQuitPIDs
 
         for pid in state.forceQuitPIDs {
@@ -228,6 +226,13 @@ public final class AlertSessionController: ObservableObject {
                 continue
             }
             try? await appActionService.forceQuit(pid: pid, bundleIdentifier: process.bundleIdentifier)
+        }
+    }
+
+    public func continueWaitingAfterForceQuitPrompt() {
+        state.isForceQuitConfirmationPresented = false
+        if state.phase == .quitRequested {
+            state.phase = .waitingForQuitCompletion
         }
     }
 
@@ -274,10 +279,14 @@ public final class AlertSessionController: ObservableObject {
             return
         }
 
+        state.forceQuitPIDs = state.originalSelectedPIDs.filter { alivePIDs.contains($0) }
+        state.selectedPIDs = orderedPIDs(state.selectedPIDs, within: state.visibleProcesses)
+
         if state.originalSelectedPIDs.allSatisfy({ !alivePIDs.contains($0) }) {
             countdownTask?.cancel()
             state.phase = .completed
             state.forceQuitPIDs = []
+            state.isForceQuitConfirmationPresented = false
             Task { [weak self] in
                 await self?.scheduleRelaunchIfNeeded()
             }
@@ -312,6 +321,15 @@ public final class AlertSessionController: ObservableObject {
         return processes.map(\.pid).filter { wanted.contains($0) }
     }
 
+    private func updateVisibleState(with roots: [ProcessTreeNode]) {
+        let orderedRoots = orderedRootsBySelection(roots, selectedPIDs: state.selectedPIDs)
+        let visibleProcesses = flatten(orderedRoots)
+
+        state.visibleTreeRoots = orderedRoots
+        state.visibleProcesses = visibleProcesses
+        state.selectedPIDs = orderedPIDs(state.selectedPIDs, within: visibleProcesses)
+    }
+
     private func dictionaryByPID(from processes: [ProcessSample]) -> [Int32: String] {
         Dictionary(uniqueKeysWithValues: processes.compactMap { process in
             guard let bundleIdentifier = process.bundleIdentifier else {
@@ -342,6 +360,35 @@ public final class AlertSessionController: ObservableObject {
 
     private func flatten(_ roots: [ProcessTreeNode]) -> [ProcessSample] {
         roots.flatMap(flattenNode)
+    }
+
+    private func orderedRootsBySelection(_ roots: [ProcessTreeNode], selectedPIDs: [Int32]) -> [ProcessTreeNode] {
+        let selectedPIDSet = Set(selectedPIDs)
+
+        return roots.sorted { lhs, rhs in
+            let lhsIsSelected = containsSelectedPID(lhs, selectedPIDSet: selectedPIDSet)
+            let rhsIsSelected = containsSelectedPID(rhs, selectedPIDSet: selectedPIDSet)
+
+            if lhsIsSelected != rhsIsSelected {
+                return lhsIsSelected && !rhsIsSelected
+            }
+
+            if lhs.aggregateMemoryBytes != rhs.aggregateMemoryBytes {
+                return lhs.aggregateMemoryBytes > rhs.aggregateMemoryBytes
+            }
+
+            return lhs.pid < rhs.pid
+        }
+    }
+
+    private func containsSelectedPID(_ node: ProcessTreeNode, selectedPIDSet: Set<Int32>) -> Bool {
+        if selectedPIDSet.contains(node.pid) {
+            return true
+        }
+
+        return node.children.contains { child in
+            containsSelectedPID(child, selectedPIDSet: selectedPIDSet)
+        }
     }
 
     private func flattenNode(_ node: ProcessTreeNode) -> [ProcessSample] {

@@ -204,6 +204,10 @@ Notes:
 - `swift test` is the package-level test gate.
 - `xcodebuild build` is the native app build gate.
 - `xcodebuild test` is not relied on in this environment.
+- Prefer these exact command shapes for routine verification so approval prefixes can be reused across turns.
+- Do not invent many near-duplicate verification commands unless the task truly needs narrower filtering.
+- If a targeted test is useful, prefer the same canonical `swift test --scratch-path .swiftpm-cache --filter ...` shape rather than ad hoc variants.
+- When sandbox escalation is needed, prefer reusing the existing canonical verification commands before requesting new approval patterns.
 
 ### Git Workflow
 

@@ -86,10 +86,7 @@ public struct LiveProcessSampler: ProcessSampling {
             }
         }
 
-        guard result == 0 else {
-            return (0, false)
-        }
-
-        return (usage.ri_resident_size, true)
+        let sample = ProcessMemorySample.make(from: usage, result: result)
+        return (sample.bytes, sample.didSampleMemory)
     }
 }

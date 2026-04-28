@@ -53,7 +53,10 @@ struct MenuBarContainerView: View {
         while !Task.isCancelled {
             await refreshAndMaybePresentAlertTask()
 
-            let intervalSeconds = max(1, settings.detectionIntervalSeconds)
+            let intervalSeconds = MonitoringCadence.refreshIntervalSeconds(
+                detectionIntervalSeconds: settings.detectionIntervalSeconds,
+                isAlertActive: isAlertActive
+            )
             try? await Task.sleep(nanoseconds: UInt64(intervalSeconds) * 1_000_000_000)
         }
     }
@@ -99,7 +102,7 @@ struct MenuBarContainerView: View {
 
     private var isAlertActive: Bool {
         switch alertSessionController.state.phase {
-        case .presenting, .quitRequested, .forceQuitAvailable:
+        case .presenting, .quitRequested, .waitingForQuitCompletion:
             true
         case .idle, .completed, .dismissed:
             false

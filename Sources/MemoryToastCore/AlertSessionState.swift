@@ -4,7 +4,7 @@ public enum AlertPhase: Equatable, Sendable {
     case idle
     case presenting
     case quitRequested
-    case forceQuitAvailable
+    case waitingForQuitCompletion
     case completed
     case dismissed
 }
@@ -28,6 +28,7 @@ public struct AlertSessionState: Equatable, Sendable {
     public var matchedReasons: [TriggeredRuleReason]
     public var snapshot: MemorySnapshot?
     public var isSelectionLocked: Bool
+    public var isForceQuitConfirmationPresented: Bool
     public var countdownRemaining: Int
     public var countdownTotalSeconds: Int
 
@@ -44,6 +45,7 @@ public struct AlertSessionState: Equatable, Sendable {
         matchedReasons: [TriggeredRuleReason] = [],
         snapshot: MemorySnapshot? = nil,
         isSelectionLocked: Bool = false,
+        isForceQuitConfirmationPresented: Bool = false,
         countdownRemaining: Int = 0,
         countdownTotalSeconds: Int = 0
     ) {
@@ -59,6 +61,7 @@ public struct AlertSessionState: Equatable, Sendable {
         self.matchedReasons = matchedReasons
         self.snapshot = snapshot
         self.isSelectionLocked = isSelectionLocked
+        self.isForceQuitConfirmationPresented = isForceQuitConfirmationPresented
         self.countdownRemaining = countdownRemaining
         self.countdownTotalSeconds = countdownTotalSeconds
     }

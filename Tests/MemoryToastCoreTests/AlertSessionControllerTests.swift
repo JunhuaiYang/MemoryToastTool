@@ -37,7 +37,7 @@ final class AlertSessionControllerTests: XCTestCase {
         XCTAssertEqual(controller.state.relaunchAfterQuitPIDs, [7])
     }
 
-    func testQuitRequestDisablesSelectionAndRevealsForceQuitAfterCountdown() async throws {
+    func testQuitRequestDisablesSelectionAndPromptsForceQuitAfterCountdown() async throws {
         let workspace = StubWorkspaceController()
         let controller = AlertSessionController(
             countdownSeconds: 10,
@@ -55,9 +55,10 @@ final class AlertSessionControllerTests: XCTestCase {
         await controller.finishCountdown()
 
         XCTAssertEqual(workspace.quitRequests, ["chrome", "slack"])
-        XCTAssertEqual(controller.state.phase, .forceQuitAvailable)
+        XCTAssertEqual(controller.state.phase, .waitingForQuitCompletion)
         XCTAssertTrue(controller.state.isSelectionLocked)
         XCTAssertEqual(controller.state.forceQuitPIDs, [7])
+        XCTAssertTrue(controller.state.isForceQuitConfirmationPresented)
     }
 
     func testForceQuitOnlyTargetsOriginallySelectedProcessesStillAlive() async throws {
@@ -79,6 +80,22 @@ final class AlertSessionControllerTests: XCTestCase {
         await controller.forceQuitSelected()
 
         XCTAssertEqual(workspace.forceQuitRequests, ["chrome"])
+    }
+
+    func testContinueWaitingDismissesForceQuitPromptButKeepsSessionActive() async throws {
+        let controller = makeController()
+
+        controller.present(snapshot: makeSnapshot(), selectedPIDs: [7, 8])
+        await controller.requestQuitSelected()
+        controller.refreshProcesses([
+            ProcessSample(pid: 7, appName: "Chrome", bundleIdentifier: "chrome", memoryBytes: 6, isRunning: true)
+        ])
+        await controller.finishCountdown()
+        controller.continueWaitingAfterForceQuitPrompt()
+
+        XCTAssertEqual(controller.state.phase, .waitingForQuitCompletion)
+        XCTAssertFalse(controller.state.isForceQuitConfirmationPresented)
+        XCTAssertEqual(controller.state.forceQuitPIDs, [7])
     }
 
     func testCompletedSessionClosesWhenNoSelectedProcessesRemain() async throws {
@@ -141,6 +158,15 @@ final class AlertSessionControllerTests: XCTestCase {
 
         XCTAssertEqual(controller.state.snapshot, snapshot)
         XCTAssertEqual(controller.state.matchedReasons, reasons)
+    }
+
+    func testSelectedRootsArePinnedAheadOfUnselectedRoots() async throws {
+        let controller = makeController()
+
+        controller.present(snapshot: makeMultiRootSnapshot(), selectedPIDs: [100])
+
+        XCTAssertEqual(controller.state.visibleTreeRoots.map(\.pid), [100, 200])
+        XCTAssertEqual(controller.state.visibleProcesses.prefix(2).map(\.pid), [100, 200])
     }
 
     private func makeController() -> AlertSessionController {
@@ -216,6 +242,42 @@ final class AlertSessionControllerTests: XCTestCase {
                     isRunning: true,
                     childPIDs: [101]
                 )
+            ]
+        )
+    }
+
+    private func makeMultiRootSnapshot() -> MemorySnapshot {
+        let lighterSelectedRoot = ProcessTreeNode(
+            pid: 100,
+            parentPID: nil,
+            processName: "Selected App",
+            bundleIdentifier: "selected",
+            memoryBytes: 4,
+            aggregateMemoryBytes: 4,
+            isRunning: true,
+            children: []
+        )
+        let heavierUnselectedRoot = ProcessTreeNode(
+            pid: 200,
+            parentPID: nil,
+            processName: "Background App",
+            bundleIdentifier: "background",
+            memoryBytes: 10,
+            aggregateMemoryBytes: 10,
+            isRunning: true,
+            children: []
+        )
+
+        return MemorySnapshot(
+            totalMemoryBytes: 20,
+            usedMemoryBytes: 12,
+            availableMemoryBytes: 8,
+            swapUsedBytes: 1,
+            pressureLevel: .warning,
+            processTreeRoots: [heavierUnselectedRoot, lighterSelectedRoot],
+            processes: [
+                ProcessSample(pid: 200, appName: "Background App", bundleIdentifier: "background", memoryBytes: 10, aggregateMemoryBytes: 10, isRunning: true),
+                ProcessSample(pid: 100, appName: "Selected App", bundleIdentifier: "selected", memoryBytes: 4, aggregateMemoryBytes: 4, isRunning: true)
             ]
         )
     }

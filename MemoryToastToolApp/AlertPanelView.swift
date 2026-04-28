@@ -51,6 +51,22 @@ struct AlertPanelView: View {
                 dismiss()
             }
         }
+        .alert(
+            localizedString("alert.force_quit_prompt.title", language: language),
+            isPresented: forceQuitConfirmationBinding
+        ) {
+            Button(localizedString("alert.action.continue_waiting", language: language), role: .cancel) {
+                controller.continueWaitingAfterForceQuitPrompt()
+            }
+
+            Button(localizedString("alert.action.force_quit_selected", language: language), role: .destructive) {
+                Task {
+                    await controller.forceQuitSelected()
+                }
+            }
+        } message: {
+            Text(localizedFormat("alert.force_quit_prompt.message %lld", language: language, controller.state.forceQuitPIDs.count))
+        }
         .onDisappear {
             if controller.state.phase != .completed {
                 controller.dismiss()
@@ -135,8 +151,8 @@ struct AlertPanelView: View {
 
                 Text(localizedFormat("alert.countdown %lld", language: language, controller.state.countdownRemaining))
                     .foregroundStyle(.secondary)
-            } else if controller.state.phase == .forceQuitAvailable {
-                Text(localizedString("alert.force_quit_ready", language: language))
+            } else if controller.state.phase == .waitingForQuitCompletion {
+                Text(localizedString("alert.waiting_for_exit", language: language))
                     .foregroundStyle(.secondary)
             } else if let snoozeUntil = settings.snoozeUntil, snoozeUntil > Date() {
                 Text(
@@ -158,7 +174,7 @@ struct AlertPanelView: View {
                 controller.dismiss()
                 dismiss()
             }
-            .disabled(controller.state.phase == .quitRequested)
+            .disabled(controller.state.isSelectionLocked)
 
             Button(localizedString("alert.action.snooze", language: language)) {
                 isIgnoringCurrentIncident = false
@@ -167,7 +183,7 @@ struct AlertPanelView: View {
                 controller.dismiss()
                 dismiss()
             }
-            .disabled(controller.state.phase == .quitRequested)
+            .disabled(controller.state.isSelectionLocked)
 
             Spacer()
 
@@ -177,15 +193,6 @@ struct AlertPanelView: View {
                 }
             }
             .disabled(controller.state.isSelectionLocked || controller.state.selectedPIDs.isEmpty)
-
-            if controller.state.phase == .forceQuitAvailable {
-                Button(localizedString("alert.action.force_quit_selected", language: language)) {
-                    Task {
-                        await controller.forceQuitSelected()
-                    }
-                }
-                .disabled(controller.state.forceQuitPIDs.isEmpty)
-            }
         }
     }
 
@@ -195,6 +202,17 @@ struct AlertPanelView: View {
 
     private var progressCompletedSeconds: Int {
         max(0, countdownTotalSeconds - controller.state.countdownRemaining)
+    }
+
+    private var forceQuitConfirmationBinding: Binding<Bool> {
+        Binding(
+            get: { controller.state.isForceQuitConfirmationPresented },
+            set: { isPresented in
+                if !isPresented {
+                    controller.continueWaitingAfterForceQuitPrompt()
+                }
+            }
+        )
     }
 
     @ViewBuilder
